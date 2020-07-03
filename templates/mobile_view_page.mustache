@@ -1,0 +1,73 @@
+{{=<% %>=}}
+<div>
+	<core-course-module-description description="<% quickom.intro %>" component="mod_quickom" componentId="<% cmid %>"></core-course-module-description>
+	
+	<ion-list>
+		<%#available%>
+			<ion-item>
+				<button ion-button block color="light" core-site-plugins-call-ws name="mod_quickom_grade_item_update" [params]="{quickomid: <% cmid %>}" [preSets]="{getFromCache: 0, saveToCache: 0}" (onSuccess)="loadMeeting($event)">
+					{{ 'plugin.mod_quickom.join_meeting' | translate }}
+				</button>
+			</ion-item>
+		<%/available%>
+		<%^available%>
+			<ion-item>
+				<p>{{ 'plugin.mod_quickom.unavailable' | translate }}</p>
+			</ion-item>
+		<%/available%>
+		
+		<%#quickom.recurring%>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.recurringmeetinglong' | translate }}</p>
+			</ion-item>
+		<%/quickom.recurring%>
+		<%^quickom.recurring%>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.meeting_time' | translate }}</p>
+				<p><% start_time %></p>
+			</ion-item>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.duration' | translate }}</p>
+				<p><% duration %></p>
+			</ion-item>
+		<%/quickom.recurring%>
+		
+		<%^quickom.webinar%>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.passwordprotected' | translate }}</p>
+				<%#quickom.password%><p>{{ 'core.yes' | translate }}</p><%/quickom.password%>
+				<%^quickom.password%><p>{{ 'core.no' | translate }}</p><%/quickom.password%>
+			</ion-item>
+		<%/quickom.webinar%>
+	  
+		<%^quickom.webinar%>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.joinbeforehost' | translate }}</p>
+				<%#quickom.option_jbh%><p>{{ 'core.yes' | translate }}</p><%/quickom.option_jbh%>
+				<%^quickom.option_jbh%><p>{{ 'core.no' | translate }}</p><%/quickom.option_jbh%>
+			</ion-item>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.starthostjoins' | translate }}</p>
+				<%#quickom.option_host_video%><p>{{ 'core.yes' | translate }}</p><%/quickom.option_host_video%>
+				<%^quickom.option_host_video%><p>{{ 'core.no' | translate }}</p><%/quickom.option_host_video%>
+			</ion-item>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.startpartjoins' | translate }}</p>
+				<%#quickom.option_participants_video%><p>{{ 'core.yes' | translate }}</p><%/quickom.option_participants_video%>
+				<%^quickom.option_participants_video%><p>{{ 'core.no' | translate }}</p><%/quickom.option_participants_video%>
+			</ion-item>
+		<%/quickom.webinar%>
+		
+		<ion-item>
+			<p class="item-heading">{{ 'plugin.mod_quickom.option_audio' | translate }}</p>
+			<p><% option_audio %></p>
+		</ion-item>
+		
+		<%^quickom.recurring%>
+			<ion-item>
+				<p class="item-heading">{{ 'plugin.mod_quickom.status' | translate }}</p>
+				<p><% status %></p>
+			</ion-item>
+		<%/quickom.recurring%>
+	</ion-list>
+</div>
