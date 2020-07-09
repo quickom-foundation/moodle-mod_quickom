@@ -26,7 +26,7 @@
  */
 
 
-header('Content-Type: application/json'); // die()
+header('Content-Type: application/json'); // return json on die()
 
 require_once($CFG->libdir . "/externallib.php");
 
@@ -225,7 +225,7 @@ class TempData
 class Extend
 {
 
-    public static function call_API_BE($method, $url, $data, $headers = [])
+    public static function call_api($method, $url, $data, $headers = [])
     {
         global $CFG;
 
@@ -274,78 +274,55 @@ class Extend
         $result = curl_exec($curl);
         if ($result === false) {
             $err = 'Curl error: ' . curl_error($curl);
-            // die($err);
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('connectionfailed', 'quickom'), $err);
         }
         curl_close($curl);
         return $result;
     }
 
-    public static function get_qr_code_link($teacher, $args)
+
+    public static function prepare_data_to_create_update_classroom($quickom)
     {
-        global $DB, $USER;
-        $qk_qr_code_link = '';
-        $qk_qr_code = Extend::get_quickom_qr_code($teacher->id, 1, $args);
-        if (empty($qk_qr_code)) {
-            $qk_qr_code_link = 'Can not create qk_qr_code';
-        } else {
-            $qk_qr_code_link = $qk_qr_code['url'];
+        global $USER;
+        $label = "";
+        $course = get_course($quickom->course);
+        if ($course) {
+            $label = $course->fullname;
+            $sectionname = get_section_name($course, $quickom->section);
+            if ($sectionname) {
+                $label = $label . ' - ' . $sectionname;
+            }
         }
-        return $qk_qr_code_link;
+        if (empty($label)) {
+            $label = $quickom->name;
+        } else {
+            $label = $label . ' - ' . $quickom->name;
+        }
+
+        $start_time = $quickom->start_time * 1000; // seconds to miliseconds
+        $end_time = $start_time + $quickom->duration * 1000;
+        $valid_from = time() * 1000;
+        $valid_to = $end_time + 30 * 60 * 1000; // 30 minute later
+        $expire_at = $valid_to + 30 * 60 * 1000; // 30 minute later
+        $args = [
+            "classroom" => true,
+            'label' => $label,
+            'start_date' => $start_time,
+            'end_date' => $end_time,
+            'valid_from' => $valid_from,
+            'valid_to' => $valid_to,
+            'expire_at' => $expire_at,
+            'passcode' => empty($quickom->password) ? "" : $quickom->password,
+            'host_name' => fullname($USER),
+            'alias' => $quickom->alias,
+        ];
+
+        return $args;
     }
 
-    public static function get_quickom_qr_code($user_id = 0, $groupcall = 0, $args = [])
+    public static function create_quickom_qr_code($quickom)
     {
-        global $DB, $USER;
-
-        if (empty($user_id)) {
-            $user_id = $USER->id;
-        }
-        $user = core_user::get_user($user_id);
-
-        $qk_member_id = '';
-
-        $qk_member_id = Extend::quickom_get_member_id_from_qk_server($user->email);
-        if (empty($qk_member_id)) {
-            $account = [
-                'email'    =>    $user->email,
-                'name'    =>    $user->firstname . ' ' . $user->lastname,
-            ];
-            $add_to_comp = Extend::quickom__add_member_to_company($account);
-            $qk_member_id = Extend::quickom_get_member_id_from_qk_server($user->email);
-        }
-        if ($groupcall == 0) {
-            // Meeting 1-1
-            $data_to_BE = [
-                "label" => $args['label'],
-                "expire_at" => -1,
-                "alive_type" => "permanent",
-                "user" => $qk_member_id,
-                "limit_minute" => 0,
-                "limit_amount" => 0,
-                "limit_call_number" => 0,
-                "allow_call" => true,
-                "call_type" => "video", // audio/video
-                "allow_chat" => true,
-                "me" => false,
-                "custom_url" => ""
-            ];
-        } else {
-            // Group call
-            $data_to_BE = [
-                "label" => $args['label'],
-                "classroom" => true,
-                "own_member" => $qk_member_id,
-                "valid_from" => $args['valid_from'], // milisecond
-                "valid_to" => $args['valid_to'],
-                "expire_at" => $args['expire_at'],
-                "start_date" => $args['start_time'],
-                "end_date" => $args['end_time'],
-                "passcode" => $args['password'],
-                "host_name" => $args['host_name'],
-            ];
-        }
-
+        $args = Extend::prepare_data_to_create_update_classroom($quickom);
         $config = get_config('mod_quickom');
         if (empty($config->apikey)) {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
@@ -353,8 +330,8 @@ class Extend
         $method = 'POST';
         $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/create';
         $headers = ['Authorization: ' . $config->apikey];
-        $data_to_BE_json = json_encode($data_to_BE);
-        $response_json = Extend::call_API_BE($method, $url, $data_to_BE_json, $headers);
+        $data_json = json_encode($args);
+        $response_json = Extend::call_api($method, $url, $data_json, $headers);
         $response = json_decode($response_json, true);
         if (!empty($response['url'])) {
             return $response;
@@ -362,80 +339,26 @@ class Extend
         return null;
     }
 
-    public static function quickom__add_member_to_company($account = [])
+    public static function update_quickom_qr_code($quickom)
     {
-        $data_to_BE = [
-            "username" => $account['email'],
-            "name" => $account['name'],
-        ];
-
+        $args = Extend::prepare_data_to_create_update_classroom($quickom);
         $config = get_config('mod_quickom');
         if (empty($config->apikey)) {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
         }
         $method = 'POST';
-        $url = 'https://' . QK_API_URL . 'apiv1/member/add';
+        $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/update';
         $headers = ['Authorization: ' . $config->apikey];
-
-        $data_to_BE_json = json_encode($data_to_BE);
-        $response_json = Extend::call_API_BE($method, $url, $data_to_BE_json, $headers);
-
+        $data_json = json_encode($args);
+        $response_json = Extend::call_api($method, $url, $data_json, $headers);
         $response = json_decode($response_json, true);
-        return $response;
-    }
-
-    // Need to add to company first then get member id
-    public static function quickom_get_member_id_from_qk_server($email)
-    {
-        global $DB, $USER;
-
-        $data_to_BE = [
-            "email" => $email,
-        ];
-
-        $config = get_config('mod_quickom');
-        if (empty($config->apikey)) {
-            throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
+        if (!empty($response['url'])) {
+            return $response;
         }
-        $method = 'POST';
-        $url = 'https://' . QK_API_URL . 'apiv1/member/detail';
-        $headers = ['Authorization: ' . $config->apikey];
-
-        $data_to_BE_json = json_encode($data_to_BE);
-        $response_json = Extend::call_API_BE($method, $url, $data_to_BE_json, $headers);
-        $response = json_decode($response_json, true);
-
-        if (!empty($response['member_id'])) {
-            return $response['member_id'];
+        if (!empty($response['error'])) {
+            throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr', 'quickom'), $response['error'] . " : " . $response['error_description']);
         }
-        return '';
-    }
-
-    // Create new quickom account
-    public static function quickom_create_member($email)
-    {
-        global $DB, $USER;
-
-        $data_to_BE = [
-            "email" => $email,
-        ];
-
-        $config = get_config('mod_quickom');
-        if (empty($config->apikey)) {
-            throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
-        }
-        $method = 'POST';
-        $url = 'https://' . QK_API_URL . 'apiv1/member/create';
-        $headers = ['Authorization: ' . $config->apikey];
-
-        $data_to_BE_json = json_encode($data_to_BE);
-        $response_json = Extend::call_API_BE($method, $url, $data_to_BE_json, $headers);
-        $response = json_decode($response_json, true);
-
-        if (!empty($response['member_id'])) {
-            return $response['member_id'];
-        }
-        return '';
+        return null;
     }
 
     public static function base64url_encode($data)

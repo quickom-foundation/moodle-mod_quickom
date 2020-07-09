@@ -374,37 +374,8 @@ class mod_quickom_webservice
     {
         global $USER;
         $temp = (object) TempData::get_temp_users_id_meetings($this->_database_to_api($quickom));
-        $label = "";
-        $course = get_course($quickom->course);
-        if ($course) {
-            $label = $course->fullname;
-            $sectionname = get_section_name($course, $quickom->section);
-            if ($sectionname) {
-                $label = $label . ' - ' . $sectionname;
-            }
-        }
-        if (empty($label)) {
-            $label = $quickom->name;
-        } else {
-            $label = $label . ' - ' . $quickom->name;
-        }
 
-        $start_time = $quickom->start_time * 1000; // seconds to miliseconds
-        $end_time = $start_time + $quickom->duration * 1000;
-        $valid_from = time() * 1000;
-        $valid_to = $end_time + 30 * 60 * 1000; // 30 minute later
-        $expire_at = $valid_to + 30 * 60 * 1000; // 30 minute later
-        $args = [
-            'label' => $label,
-            'start_time' => $start_time,
-            'end_time' => $end_time,
-            'valid_from' => $valid_from,
-            'valid_to' => $valid_to,
-            'expire_at' => $expire_at,
-            'password' => $quickom->password,
-            'host_name' => fullname($USER),
-        ];
-        $qk_qr_code = Extend::get_quickom_qr_code($USER->id, 1, $args);
+        $qk_qr_code = Extend::create_quickom_qr_code($quickom);
         if (!empty($qk_qr_code['url'])) {
             $temp->start_url = $qk_qr_code['tutor_url'];
             $temp->join_url = $qk_qr_code['student_url'];
@@ -423,8 +394,7 @@ class mod_quickom_webservice
      */
     public function update_meeting($quickom)
     {
-        $url = ($quickom->webinar ? 'webinars/' : 'meetings/') . $quickom->meeting_id;
-        $this->_make_call($url, $this->_database_to_api($quickom), 'patch');
+        $response = Extend::update_quickom_qr_code($quickom);
     }
 
     /**
@@ -451,7 +421,7 @@ class mod_quickom_webservice
     {
         $temp = TempData::get_temp_meeting_webinar_info();
         return $temp;
-     
+
         $url = ($webinar ? 'webinars/' : 'meetings/') . $id;
         $response = null;
         try {

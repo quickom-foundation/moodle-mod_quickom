@@ -106,16 +106,17 @@ function quickom_update_instance(stdClass $quickom, mod_quickom_mod_form $mform 
     // The object received from mod_form.php returns instance instead of id for some reason.
     $quickom->id = $quickom->instance;
     $quickom->timemodified = time();
-    $DB->update_record('quickom', $quickom);
 
-    $updatedquickomrecord = $DB->get_record('quickom', array('id' => $quickom->instance));
-    $quickom->meeting_id = $updatedquickomrecord->meeting_id;
-    $quickom->webinar = $updatedquickomrecord->webinar;
+    $quickom_record = $DB->get_record('quickom', array('id' => $quickom->instance));
+    $quickom->alias = $quickom_record->alias;
 
-    // Update meeting on Quickom.
+    if (empty($quickom_record->alias)) {
+        return false;
+    }
     $service = new mod_quickom_webservice();
     try {
         $service->update_meeting($quickom);
+        $DB->update_record('quickom', $quickom);
     } catch (moodle_exception $error) {
         return false;
     }

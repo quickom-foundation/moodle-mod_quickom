@@ -3,7 +3,7 @@ QUICKOM - The U.S. patent pending decentralized telecom suite for large scale cl
 
 ## Installation
 Requires Quickom API key.
-Get your API key from here https://quickom.com/dashboard/profile
+Get your API key from here https://conference.quickom.com/dashboard/setting
 
 ## Settings
 Must set the following settings to enable the plugin:
@@ -11,7 +11,14 @@ Must set the following settings to enable the plugin:
 * Quickom API key (mod_quickom | apikey)
 * Quickom home page URL (mod_quickom | quickomurl), Link to your organization's custom Quickom landing page.
 
+## Useful links
+ More documentation on this plugin: https://github.com/quickom-foundation/moodle-mod_quickom/wiki
+
 ## Changelog
+
+v1.1
+
+* Fixed Update classroom
 
 v1.0
 
