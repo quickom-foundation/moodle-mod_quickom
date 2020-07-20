@@ -25,20 +25,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+require_once $CFG->libdir . "/externallib.php";
 
-header('Content-Type: application/json'); // return json on die()
+header('Content-Type: application/json');
 
-require_once($CFG->libdir . "/externallib.php");
+class TempData {
 
-// require_once($CFG->dirroot.'/mod/quickom/extend.php');
-
-class TempData
-{
-
-    public static function get_temp_user()
-    {
+    public static function get_temp_user() {
         global $USER;
-        // get_user
+        // For get_user.
         return [
             "id" => "55elw9y_SQSphrafVw_xdQ",
             "first_name" => $USER->firstname,
@@ -47,7 +42,7 @@ class TempData
             "type" => 1,
             "role_name" => "Owner",
             "pmi" => 6830294026,
-            "use_pmi" => False,
+            "use_pmi" => false,
             "personal_meeting_url" => "https://quickom.beowulfchain.com/call/71811585310839099",
             "timezone" => "Asia/Bangkok",
             "verified" => 1,
@@ -62,87 +57,82 @@ class TempData
             "language" => "en-US",
             "phone_country" => "",
             "phone_number" => "",
-            "status" => "active"
+            "status" => "active",
         ];
     }
 
-    public static function get_temp_user_settings($userid)
-    {
-        // _get_user_settings
+    public static function get_temp_user_settings($userid) {
+        // For _get_user_settings.
         return [
             "schedule_meeting" =>
             [
-                "host_video" => False,
-                "participants_video" => False,
+                "host_video" => false,
+                "participants_video" => false,
                 "audio_type" => "both",
-                "join_before_host" => True,
-                "use_pmi_for_scheduled_meetings" => False,
-                "use_pmi_for_instant_meetings" => False,
-                "enforce_login" => False,
-                "not_store_meeting_topic" => False,
-                "force_pmi_jbh_password" => False,
-                "require_password_for_scheduling_new_meetings" => True,
-                "require_password_for_instant_meetings" => True,
+                "join_before_host" => true,
+                "use_pmi_for_scheduled_meetings" => false,
+                "use_pmi_for_instant_meetings" => false,
+                "enforce_login" => false,
+                "not_store_meeting_topic" => false,
+                "force_pmi_jbh_password" => false,
+                "require_password_for_scheduling_new_meetings" => true,
+                "require_password_for_instant_meetings" => true,
                 "require_password_for_pmi_meetings" => "none",
                 "pmi_password" => "",
-                "pstn_password_protected" => False
+                "pstn_password_protected" => false,
             ],
             "in_meeting" =>
             [
-                "e2e_encryption" => False,
-                "chat" => True,
-                "private_chat" => True,
-                "auto_saving_chat" => False,
+                "e2e_encryption" => false,
+                "chat" => true,
+                "private_chat" => true,
+                "auto_saving_chat" => false,
                 "entry_exit_chime" => "none",
-                "record_play_voice" => False,
-                "file_transfer" => False,
-                "feedback" => False,
-                "attendee_on_hold" => False,
-                "show_meeting_control_toolbar" => False,
-                "annotation" => True,
-                "remote_control" => True,
-                "non_verbal_feedback" => False,
-                "breakout_room" => False,
-                "remote_support" => False,
-                "closed_caption" => False,
-                "virtual_background" => True,
-                "far_end_camera_control" => False,
-                "attention_tracking" => False,
-                "waiting_room" => False
+                "record_play_voice" => false,
+                "file_transfer" => false,
+                "feedback" => false,
+                "attendee_on_hold" => false,
+                "show_meeting_control_toolbar" => false,
+                "annotation" => true,
+                "remote_control" => true,
+                "non_verbal_feedback" => false,
+                "breakout_room" => false,
+                "remote_support" => false,
+                "closed_caption" => false,
+                "virtual_background" => true,
+                "far_end_camera_control" => false,
+                "attention_tracking" => false,
+                "waiting_room" => false,
             ],
             "email_notification" => [
-                "jbh_reminder" => True,
-                "cancel_meeting_reminder" => True
-
+                "jbh_reminder" => true,
+                "cancel_meeting_reminder" => true,
             ],
             "recording" => [
-                "local_recording" => True,
+                "local_recording" => true,
                 "auto_recording" => "none",
-                "auto_delete_cmr" => False
-
+                "auto_delete_cmr" => false,
             ],
             "telephony" => [
-                "show_international_numbers_link" => True
+                "show_international_numbers_link" => true,
             ],
             "tsp" => [],
             "feature" => [
                 "meeting_capacity" => 100,
-                "large_meeting" => False,
-                "webinar" => False,
-                "cn_meeting" => False,
-                "in_meeting" => False,
-                "quickom_phone" => False
+                "large_meeting" => false,
+                "webinar" => false,
+                "cn_meeting" => false,
+                "in_meeting" => false,
+                "quickom_phone" => false,
             ],
             "integration" => [
-                "linkedin_sales_navigator" => False
-            ]
+                "linkedin_sales_navigator" => false,
+            ],
         ];
     }
 
-
-    public static function get_temp_meeting_webinar_info()
-    {
-        // get_meeting_webinar_info
+    public static function get_temp_meeting_webinar_info() {
+        // For get_meeting_webinar_info.
         return [
             "uuid" => "icGbe5LTSBSiXtKOSuhmsg==",
             "id" => 174202572,
@@ -157,33 +147,30 @@ class TempData
             "start_url" => "https://quickom.beowulfchain.com/call/71811585310839099",
             "join_url" => "https://quickom.beowulfchain.com/call/71811585310839099",
             "settings" => [
-                "host_video" => True,
-                "participant_video" => True,
-                "cn_meeting" => False,
-                "in_meeting" => False,
-                "join_before_host" => False,
-                "mute_upon_entry" => False,
-                "watermark" => False,
-                "use_pmi" => False,
+                "host_video" => true,
+                "participant_video" => true,
+                "cn_meeting" => false,
+                "in_meeting" => false,
+                "join_before_host" => false,
+                "mute_upon_entry" => false,
+                "watermark" => false,
+                "use_pmi" => false,
                 "approval_type" => 2,
                 "audio" => "both",
                 "auto_recording" => "none",
-                "enforce_login" => False,
+                "enforce_login" => false,
                 "enforce_login_domains" => "",
                 "alternative_hosts" => "",
-                "close_registration" => False,
-                "registrants_confirmation_email" => True,
-                "waiting_room" => False,
-                "registrants_email_notification" => True,
-                "meeting_authentication" => False
-            ]
+                "close_registration" => false,
+                "registrants_confirmation_email" => true,
+                "waiting_room" => false,
+                "registrants_email_notification" => true,
+                "meeting_authentication" => false,
+            ],
         ];
     }
 
-
-    public static function get_temp_users_id_meetings($data)
-    {
-        // get_user
+    public static function get_temp_users_id_meetings($data) {
         return [
             "uuid" => "uKLWauBXQtiDW5QOEDojMA==",
             "id" => 214673349,
@@ -198,64 +185,71 @@ class TempData
             "start_url" => "https://quickom.beowulfchain.com/call/71811585310839099",
             "join_url" => "https://quickom.beowulfchain.com/call/71811585310839099",
             "settings" => [
-                "host_video" => True,
-                "participant_video" => True,
-                "cn_meeting" => False,
-                "in_meeting" => False,
-                "join_before_host" => False,
-                "mute_upon_entry" => False,
-                "watermark" => False,
-                "use_pmi" => False,
+                "host_video" => true,
+                "participant_video" => true,
+                "cn_meeting" => false,
+                "in_meeting" => false,
+                "join_before_host" => false,
+                "mute_upon_entry" => false,
+                "watermark" => false,
+                "use_pmi" => false,
                 "approval_type" => 2,
                 "audio" => "both",
                 "auto_recording" => "none",
-                "enforce_login" => False,
+                "enforce_login" => false,
                 "enforce_login_domains" => "",
                 "alternative_hosts" => "",
-                "close_registration" => False,
-                "registrants_confirmation_email" => True,
-                "waiting_room" => False,
-                "registrants_email_notification" => True,
-                "meeting_authentication" => False
-            ]
+                "close_registration" => false,
+                "registrants_confirmation_email" => true,
+                "waiting_room" => false,
+                "registrants_email_notification" => true,
+                "meeting_authentication" => false,
+            ],
         ];
     }
 }
 
-class Extend
-{
+class Extend {
 
-    public static function call_api($method, $url, $data, $headers = [])
-    {
+    public static function call_api($method, $url, $data, $headers = []) {
         global $CFG;
 
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . "/cacert.pem"); // for SSL certification
+        curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . "/cacert.pem"); // For SSL certification.
 
         switch ($method) {
-            case "POST":
-                curl_setopt($curl, CURLOPT_POST, 1);
-                if ($data)
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-                break;
-            case "PUT":
-                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-                if ($data)
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-                break;
-            default:
-                if ($data)
-                    $url = sprintf("%s?%s", $url, http_build_query($data));
+        case "POST":
+            curl_setopt($curl, CURLOPT_POST, 1);
+            if ($data) {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            }
+            break;
+        case "PUT":
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+            if ($data) {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            }
+            break;
+        case "DELETE":
+            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+            if ($data) {
+                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+            }
+            break;
+
+        default:
+            if ($data) {
+                $url = sprintf("%s?%s", $url, http_build_query($data));
+            }
         }
 
-        // OPTIONS:
         curl_setopt($curl, CURLOPT_URL, $url);
         if (empty($headers)) {
             curl_setopt($curl, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($data),
-                'Accept: application/json'
+                'Accept: application/json',
             ));
         } else {
             curl_setopt($curl, CURLOPT_HTTPHEADER, array_merge(
@@ -270,19 +264,16 @@ class Extend
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 
-        // EXECUTE:
         $result = curl_exec($curl);
         if ($result === false) {
             $err = 'Curl error: ' . curl_error($curl);
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('connectionfailed', 'quickom'), $err);
         }
         curl_close($curl);
-        return $result;
+        return json_decode($result, true);
     }
 
-
-    public static function prepare_data_to_create_update_classroom($quickom)
-    {
+    public static function prepare_data_to_create_update_classroom($quickom) {
         global $USER;
         $label = "";
         $course = get_course($quickom->course);
@@ -299,19 +290,19 @@ class Extend
             $label = $label . ' - ' . $quickom->name;
         }
 
-        $start_time = $quickom->start_time * 1000; // seconds to miliseconds
-        $end_time = $start_time + $quickom->duration * 1000;
-        $valid_from = time() * 1000;
-        $valid_to = $end_time + 30 * 60 * 1000; // 30 minute later
-        $expire_at = $valid_to + 30 * 60 * 1000; // 30 minute later
+        $starttime = $quickom->start_time * 1000; // Seconds to miliseconds.
+        $endtime = $starttime + $quickom->duration * 1000;
+        $validfrom = time() * 1000;
+        $validto = $endtime + 30 * 60 * 1000; // 30 minute later.
+        $expireat = $validto + 30 * 60 * 1000; // 30 minute later.
         $args = [
             "classroom" => true,
             'label' => $label,
-            'start_date' => $start_time,
-            'end_date' => $end_time,
-            'valid_from' => $valid_from,
-            'valid_to' => $valid_to,
-            'expire_at' => $expire_at,
+            'start_date' => $starttime,
+            'end_date' => $endtime,
+            'valid_from' => $validfrom,
+            'valid_to' => $validto,
+            'expire_at' => $expireat,
             'passcode' => empty($quickom->password) ? "" : $quickom->password,
             'host_name' => fullname($USER),
             'alias' => $quickom->alias,
@@ -320,9 +311,8 @@ class Extend
         return $args;
     }
 
-    public static function create_quickom_qr_code($quickom)
-    {
-        $args = Extend::prepare_data_to_create_update_classroom($quickom);
+    public static function create_quickom_qr_code($quickom) {
+        $args = self::prepare_data_to_create_update_classroom($quickom);
         $config = get_config('mod_quickom');
         if (empty($config->apikey)) {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
@@ -330,18 +320,16 @@ class Extend
         $method = 'POST';
         $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/create';
         $headers = ['Authorization: ' . $config->apikey];
-        $data_json = json_encode($args);
-        $response_json = Extend::call_api($method, $url, $data_json, $headers);
-        $response = json_decode($response_json, true);
+        $data = json_encode($args);
+        $response = self::call_api($method, $url, $data, $headers);
         if (!empty($response['url'])) {
             return $response;
         }
         return null;
     }
 
-    public static function update_quickom_qr_code($quickom)
-    {
-        $args = Extend::prepare_data_to_create_update_classroom($quickom);
+    public static function update_quickom_qr_code($quickom) {
+        $args = self::prepare_data_to_create_update_classroom($quickom);
         $config = get_config('mod_quickom');
         if (empty($config->apikey)) {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
@@ -349,25 +337,51 @@ class Extend
         $method = 'POST';
         $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/update';
         $headers = ['Authorization: ' . $config->apikey];
-        $data_json = json_encode($args);
-        $response_json = Extend::call_api($method, $url, $data_json, $headers);
-        $response = json_decode($response_json, true);
+        $data = json_encode($args);
+        $response = self::call_api($method, $url, $data, $headers);
         if (!empty($response['url'])) {
             return $response;
         }
         if (!empty($response['error'])) {
-            throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr', 'quickom'), $response['error'] . " : " . $response['error_description']);
+            throw new moodle_exception(
+                'errorwebservice',
+                'mod_quickom',
+                '',
+                get_string('quickomerr', 'quickom'), $response['error'] . " : " . $response['error_description']);
         }
         return null;
     }
 
-    public static function base64url_encode($data)
-    {
+    public static function delete_quickom_qr_code($quickom) {
+        $args = [
+            'alias' => $quickom->alias,
+        ];
+        $config = get_config('mod_quickom');
+        if (empty($config->apikey)) {
+            throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
+        }
+        $method = 'DELETE';
+        $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/delete';
+        $headers = ['Authorization: ' . $config->apikey];
+        $data = json_encode($args);
+        $response = self::call_api($method, $url, $data, $headers);
+        if (!empty($response['url'])) {
+            return $response;
+        }
+        if (!empty($response['error']) && $response['error'] != "404010") {
+            throw new moodle_exception(
+                'errorwebservice',
+                'mod_quickom',
+                '', get_string('quickomerr', 'quickom'), $response['error'] . " : " . $response['error_description']);
+        }
+        return null;
+    }
+
+    public static function base64url_encode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
-    public static function base64url_decode($data)
-    {
+    public static function base64url_decode($data) {
         return base64_decode(strtr($data, '-_', '+/') . str_repeat('=', 3 - (3 + strlen($data)) % 4));
     }
 }

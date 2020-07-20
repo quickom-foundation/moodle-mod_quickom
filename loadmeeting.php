@@ -49,8 +49,8 @@ $PAGE->set_context($context);
 
 require_capability('mod/quickom:view', $context);
 if ($userishost) {
-    $access_token = "#access_token=" . Extend::base64url_encode($quickom->alias . ":" . $quickom->host_key);
-    $nexturl = $quickom->start_url . "?joinType=host" . $access_token . "&token_type=Basic";
+    $accesstoken = "#access_token=" . Extend::base64url_encode($quickom->alias . ":" . $quickom->host_key);
+    $nexturl = $quickom->start_url . "?joinType=host" . $accesstoken . "&token_type=Basic";
 } else {
     // Check whether user had a grade. If no, then assign full credits to him or her.
     $gradelist = grade_get_grades($course->id, 'mod', 'quickom', $cm->instance, $USER->id);

@@ -25,11 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot.'/mod/quickom/locallib.php');
+require_once $CFG->dirroot . '/mod/quickom/locallib.php';
 
 if ($ADMIN->fulltree) {
-    require_once($CFG->dirroot.'/mod/quickom/locallib.php');
-    require_once($CFG->dirroot.'/mod/quickom/classes/webservice.php');
+    require_once $CFG->dirroot . '/mod/quickom/locallib.php';
+    require_once $CFG->dirroot . '/mod/quickom/classes/webservice.php';
 
     $settings = new admin_settingpage('modsettingquickom', get_string('pluginname', 'mod_quickom'));
 
@@ -47,17 +47,17 @@ if ($ADMIN->fulltree) {
             $errormessage = $error->a;
         }
         $statusmessage = $OUTPUT->notification(get_string('connectionstatus', 'quickom') .
-                ': ' . get_string($status, 'quickom') . $errormessage, $notifyclass);
+            ': ' . get_string($status, 'quickom') . $errormessage, $notifyclass);
         $connectionstatus = new admin_setting_heading('mod_quickom/connectionstatus', $statusmessage, '');
         $settings->add($connectionstatus);
     }
 
     $apikey = new admin_setting_configtext('mod_quickom/apikey', get_string('apikey', 'mod_quickom'),
-            get_string('apikey_desc', 'mod_quickom'), '');
+        get_string('apikey_desc', 'mod_quickom'), '');
     $settings->add($apikey);
 
     $quickomurl = new admin_setting_configtext('mod_quickom/quickomurl', get_string('quickomurl', 'mod_quickom'),
-            get_string('quickomurl_desc', 'mod_quickom'), '', PARAM_URL);
+        get_string('quickomurl_desc', 'mod_quickom'), '', PARAM_URL);
     $settings->add($quickomurl);
 
     $jointimechoices = array(0, 5, 10, 15, 20, 30, 45, 60);
@@ -66,23 +66,23 @@ if ($ADMIN->fulltree) {
         $jointimeselect[$minutes] = $minutes . ' ' . get_string('mins');
     }
     $firstabletojoin = new admin_setting_configselect('mod_quickom/firstabletojoin',
-            get_string('firstjoin', 'mod_quickom'), get_string('firstjoin_desc', 'mod_quickom'),
-            15, $jointimeselect);
+        get_string('firstjoin', 'mod_quickom'), get_string('firstjoin_desc', 'mod_quickom'),
+        15, $jointimeselect);
     $settings->add($firstabletojoin);
 
-    $settings->add(new admin_setting_heading('defaultsettings', get_string('defaultsettings', 'mod_quickom'),
-            get_string('defaultsettings_help', 'mod_quickom')));
+    $settings->add(new admin_setting_heading(
+        'defaultsettings', get_string('defaultsettings', 'mod_quickom'), get_string('defaultsettings_help', 'mod_quickom')));
 
-    $defaulthostvideo = new admin_setting_configcheckbox('mod_quickom/defaulthostvideo', get_string('option_host_video', 'quickom'),
-            '', 1, 1, 0);
+    $defaulthostvideo = new admin_setting_configcheckbox(
+        'mod_quickom/defaulthostvideo', get_string('option_host_video', 'quickom'), '', 1, 1, 0);
     $settings->add($defaulthostvideo);
 
-    $defaultparticipantsvideo = new admin_setting_configcheckbox('mod_quickom/defaultparticipantsvideo',
-            get_string('option_participants_video', 'quickom'), '', 1, 1, 0);
+    $defaultparticipantsvideo = new admin_setting_configcheckbox(
+        'mod_quickom/defaultparticipantsvideo', get_string('option_participants_video', 'quickom'), '', 1, 1, 0);
     $settings->add($defaultparticipantsvideo);
 
-    $defaultjoinbeforehost = new admin_setting_configcheckbox('mod_quickom/defaultjoinbeforehost', get_string('option_jbh', 'quickom'),
-            '', 0, 1, 0);
+    $defaultjoinbeforehost = new admin_setting_configcheckbox(
+        'mod_quickom/defaultjoinbeforehost', get_string('option_jbh', 'quickom'), '', 0, 1, 0);
     $settings->add($defaultjoinbeforehost);
 
 }

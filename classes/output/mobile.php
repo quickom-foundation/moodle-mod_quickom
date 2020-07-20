@@ -10,10 +10,10 @@ use mod_quickom_external;
 /**
  * Mobile output class for quickom
  *
- * @package	   mod_quickom
+ * @package    mod_quickom
  * @copyright  2020 Beowulf Blockchain.
  * @copyright  based on work by 2018 Nick Stefanski <nmstefanski@gmail.com>
- * @license	   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class mobile {
 
@@ -22,7 +22,7 @@ class mobile {
      *  including meeting details and launch button (if applicable).
      * @param  array $args Arguments from tool_mobile_get_content WS
      *
-     * @return array   	HTML, javascript and otherdata
+     * @return array   HTML, javascript and otherdata
      */
     public static function mobile_course_view($args) {
         global $OUTPUT, $USER, $DB;
@@ -36,33 +36,32 @@ class mobile {
         $context = context_module::instance($cm->id);
 
         require_capability('mod/quickom:view', $context);
-        // right now we're just implementing basic viewing, otherwise we may need to check other capabilities
+        // Right now we're just implementing basic viewing, otherwise we may need to check other capabilities.
         $quickom = $DB->get_record('quickom', array('id' => $cm->instance));
 
-        //WS to get quickom state
+        // WS to get quickom state.
         try {
-            $quickom_state = mod_quickom_external::get_state($cm->id);
+            $quickomstate = mod_quickom_external::get_state($cm->id);
         } catch (\Exception $e) {
-            $quickom_state = array();
+            $quickomstate = array();
         }
 
-        //format date and time
-        $start_time = userdate($quickom->start_time);
+        // Format date and time.
+        $starttime = userdate($quickom->start_time);
         $duration = format_time($quickom->duration);
 
-        //get audio option string
-        $option_audio = get_string('audio_' . $quickom->option_audio, 'mod_quickom');
+        // Get audio option string.
+        $optionaudio = get_string('audio_' . $quickom->option_audio, 'mod_quickom');
 
         $data = array(
             'quickom' => $quickom,
-            'available' => $quickom_state['available'],
-            'status' => $quickom_state['status'],
-            'start_time' => $start_time,
+            'available' => $quickomstate['available'],
+            'status' => $quickomstate['status'],
+            'start_time' => $starttime,
             'duration' => $duration,
-            'option_audio' => $option_audio,
-            //'userishost' => $userishost,
+            'option_audio' => $optionaudio,
             'cmid' => $cm->id,
-            'courseid' => $args->courseid
+            'courseid' => $args->courseid,
         );
 
         return array(
@@ -73,9 +72,9 @@ class mobile {
                 ),
             ),
             'javascript' => "this.loadMeeting = function(result) { window.open(result.joinurl, '_system'); };",
-            // this JS will redirect to a joinurl passed by the mod_quickom_grade_item_update WS
+            // This JS will redirect to a joinurl passed by the mod_quickom_grade_item_update WS.
             'otherdata' => '',
-            'files' => ''
+            'files' => '',
         );
     }
 

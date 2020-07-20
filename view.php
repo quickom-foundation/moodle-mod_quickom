@@ -27,10 +27,10 @@
  */
 // Login check require_login() is called in quickom_get_instance_setup();.
 // @codingStandardsIgnoreLine
-require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-require_once(dirname(__FILE__) . '/lib.php');
-require_once(dirname(__FILE__) . '/locallib.php');
-require_once(dirname(__FILE__) . '/../../lib/moodlelib.php');
+require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
+require_once dirname(__FILE__) . '/lib.php';
+require_once dirname(__FILE__) . '/locallib.php';
+require_once dirname(__FILE__) . '/../../lib/moodlelib.php';
 
 $config = get_config('mod_quickom');
 
@@ -59,7 +59,6 @@ if (!is_null($quickom->alternative_hosts)) {
     $alternativehosts = explode(",", $quickom->alternative_hosts);
 }
 
-// $userishost = ($quickomuserid === $quickom->host_id || in_array($USER->email, $alternativehosts));
 $userishost = ($USER->id == $quickom->creator_id);
 
 $service = new mod_quickom_webservice();
@@ -151,10 +150,6 @@ if (!$quickom->webinar) {
         $table->data[] = array($strpassword, $quickom->password);
     }
 }
-
-// if ($userishost) {
-//     $table->data[] = array($strjoinlink, html_writer::link($quickom->join_url, $quickom->join_url, array('target' => '_blank')));
-// }
 
 if (!$quickom->webinar) {
     $strjbh = ($quickom->option_jbh) ? $stryes : $strno;

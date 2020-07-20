@@ -24,11 +24,11 @@
  */
 // Login check require_login() is called in quickom_get_instance_setup();.
 // @codingStandardsIgnoreLine
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
-require_once(dirname(__FILE__).'/lib.php');
-require_once(dirname(__FILE__).'/locallib.php');
-require_once(dirname(__FILE__).'/mod_form.php');
-require_once(dirname(__FILE__).'/../../lib/moodlelib.php');
+require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
+require_once dirname(__FILE__) . '/lib.php';
+require_once dirname(__FILE__) . '/locallib.php';
+require_once dirname(__FILE__) . '/mod_form.php';
+require_once dirname(__FILE__) . '/../../lib/moodlelib.php';
 
 list($course, $cm, $quickom) = quickom_get_instance_setup();
 
@@ -52,11 +52,12 @@ echo $OUTPUT->heading($strtitle, 4);
 $sessions = quickom_get_sessions_for_display($quickom->meeting_id, $quickom->webinar, $quickom->host_id);
 if (!empty($sessions)) {
     $table = new html_table();
-    $table->head = array(get_string('title', 'mod_quickom'),
-                         get_string('starttime', 'mod_quickom'),
-                         get_string('endtime', 'mod_quickom'),
-                         get_string('duration', 'mod_quickom'),
-                         get_string('participants', 'mod_quickom'));
+    $table->head = array(
+        get_string('title', 'mod_quickom'),
+        get_string('starttime', 'mod_quickom'),
+        get_string('endtime', 'mod_quickom'),
+        get_string('duration', 'mod_quickom'),
+        get_string('participants', 'mod_quickom'));
     $table->align = array('left', 'left', 'left', 'left', 'left');
     $format = get_string('strftimedatetimeshort', 'langconfig');
 

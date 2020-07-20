@@ -28,7 +28,6 @@ namespace mod_quickom\privacy;
 
 defined('MOODLE_INTERNAL') || die();
 
-
 /**
  * Ad hoc task that performs the actions for approved data privacy requests.
  *
@@ -38,13 +37,13 @@ defined('MOODLE_INTERNAL') || die();
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class provider implements
-    // This plugin has data.
-    \core_privacy\local\metadata\provider,
+// This plugin has data.
+\core_privacy\local\metadata\provider,
 
-    \core_privacy\local\request\core_userlist_provider,
+\core_privacy\local\request\core_userlist_provider,
 
-    // This plugin currently implements the original plugin_provider interface.
-    \core_privacy\local\request\plugin\provider {
+// This plugin currently implements the original plugin_provider interface.
+\core_privacy\local\request\plugin\provider {
 
     /**
      * Returns meta data about this system.
@@ -52,8 +51,7 @@ class provider implements
      * @param   collection $collection The collection to add metadata to.
      * @return  collection  The array of metadata
      */
-    public static function get_metadata(\core_privacy\local\metadata\collection $collection):
-        \core_privacy\local\metadata\collection {
+    public static function get_metadata(\core_privacy\local\metadata\collection $collection): \core_privacy\local\metadata\collection{
         // Add all user data fields to the collection.
 
         $collection->add_database_table('quickom_meeting_participants', [
@@ -62,12 +60,12 @@ class provider implements
             'join_time' => 'privacy:metadata:quickom_meeting_participants:join_time',
             'leave_time' => 'privacy:metadata:quickom_meeting_participants:leave_time',
             'duration' => 'privacy:metadata:quickom_meeting_participants:duration',
-            'attentiveness_score' => 'privacy:metadata:quickom_meeting_participants:attentiveness_score'
+            'attentiveness_score' => 'privacy:metadata:quickom_meeting_participants:attentiveness_score',
         ], 'privacy:metadata:quickom_meeting_participants');
 
         $collection->add_database_table('quickom_meeting_details',
-                                        ['topic' => 'privacy:metadata:quickom_meeting_details:topic'],
-                                        'privacy:metadata:quickom_meeting_details');
+            ['topic' => 'privacy:metadata:quickom_meeting_details:topic'],
+            'privacy:metadata:quickom_meeting_details');
         return $collection;
     }
 
@@ -77,7 +75,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid): \core_privacy\local\request\contextlist {
+    public static function get_contexts_for_userid(int $userid): \core_privacy\local\request\contextlist{
         // Query the database for context IDs give a specific user ID and return these to the user.
 
         $contextlist = new \core_privacy\local\request\contextlist();
@@ -95,7 +93,7 @@ class provider implements
         $params = [
             'modname' => 'quickom',
             'contextlevel' => CONTEXT_MODULE,
-            'uclauserid' => $userid
+            'uclauserid' => $userid,
         ];
 
         $contextlist->add_from_sql($sql, $params);
@@ -171,7 +169,7 @@ class provider implements
         $params = [
             'modname' => 'quickom',
             'contextlevel' => CONTEXT_MODULE,
-            'userid' => $user->id
+            'userid' => $user->id,
         ] + $contextparams;
 
         $participantinstances = $DB->get_recordset_sql($sql, $params);
@@ -186,7 +184,7 @@ class provider implements
                 'join_time' => \core_privacy\local\request\transform::datetime($participantinstance->join_time),
                 'leave_time' => \core_privacy\local\request\transform::datetime($participantinstance->leave_time),
                 'duration' => $participantinstance->duration,
-                'attentiveness_score' => $participantinstance->attentiveness_score
+                'attentiveness_score' => $participantinstance->attentiveness_score,
             ];
 
             $contextdata = (object) array_merge((array) $contextdata, $instancedata);
@@ -240,12 +238,11 @@ class provider implements
                 $meetingdetails = $DB->get_records('quickom_meeting_details', array('quickomid' => $cm->instance));
                 foreach ($meetingdetails as $meetingdetail) {
                     $DB->delete_records('quickom_meeting_participants',
-                            array('detailsid' => $meetingdetail->id, 'userid' => $user->id));
+                        array('detailsid' => $meetingdetail->id, 'userid' => $user->id));
                 }
             }
         }
     }
-
 
     /**
      * Delete multiple users within a single context.

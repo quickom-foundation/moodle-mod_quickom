@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quickom/lib.php');
-require_once($CFG->dirroot . '/mod/quickom/locallib.php');
-require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
+require_once $CFG->dirroot . '/mod/quickom/lib.php';
+require_once $CFG->dirroot . '/mod/quickom/locallib.php';
+require_once $CFG->dirroot . '/mod/quickom/classes/webservice.php';
 
 /**
  * Structure step to restore one quickom activity
@@ -39,16 +39,14 @@ require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
  * @copyright  based on work by2015 UC Regents
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class restore_quickom_activity_structure_step extends restore_activity_structure_step
-{
+class restore_quickom_activity_structure_step extends restore_activity_structure_step {
 
     /**
      * Defines structure of path elements to be processed during the restore
      *
      * @return array of {@link restore_path_element}
      */
-    protected function define_structure()
-    {
+    protected function define_structure() {
 
         $userinfo = $this->get_setting_value('userinfo');
         $paths = array();
@@ -63,8 +61,7 @@ class restore_quickom_activity_structure_step extends restore_activity_structure
      *
      * @param array $data parsed element data
      */
-    protected function process_quickom($data)
-    {
+    protected function process_quickom($data) {
         global $DB;
 
         $data = (object) $data;
@@ -86,7 +83,7 @@ class restore_quickom_activity_structure_step extends restore_activity_structure
 
         if ($data->grade < 0) {
             // Scale found, get mapping.
-            $data->grade = - ($this->get_mappingid('scale', abs($data->grade)));
+            $data->grade = -($this->get_mappingid('scale', abs($data->grade)));
         }
 
         // Create the quickom instance.
@@ -97,8 +94,7 @@ class restore_quickom_activity_structure_step extends restore_activity_structure
     /**
      * Post-execution actions
      */
-    protected function after_execute()
-    {
+    protected function after_execute() {
         // Add quickom related files, no need to match by itemname (just internally handled context).
         $this->add_related_files('mod_quickom', 'intro', null);
     }

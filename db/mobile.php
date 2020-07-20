@@ -24,37 +24,37 @@
  */
 
 $addons = array(
-  "mod_quickom" => array(
-		"handlers" => array(
-			'quickommeetingdetails' => array(
-				'displaydata' => array(
-				'title' => 'pluginname',
-					'icon' => $CFG->wwwroot . '/mod/quickom/pix/icon.gif',
-					'class' => '',
-				),
-				
-				'delegate' => 'CoreCourseModuleDelegate',
-				'method' => 'mobile_course_view', // main function in \mod_quickom\output\mobile
-				'offlinefunctions' => array(
-					'mobile_course_view' => array(),
-				),
-			)
-		),
-		'lang' => array(
-			array('pluginname', 'quickom'),
-			array('join_meeting', 'quickom'),
-			array('unavailable', 'quickom'),
-			array('meeting_time', 'quickom'),
-			array('duration', 'quickom'),
-			array('passwordprotected', 'quickom'),
-			array('password', 'quickom'),
-			array('join_link', 'quickom'),
-			array('joinbeforehost', 'quickom'),
-			array('starthostjoins', 'quickom'),
-			array('startpartjoins', 'quickom'),
-			array('option_audio', 'quickom'),
-			array('status', 'quickom'),
-			array('recurringmeetinglong', 'quickom')
-		)
-	)
+    "mod_quickom" => array(
+        "handlers" => array(
+            'quickommeetingdetails' => array(
+                'displaydata' => array(
+                    'title' => 'pluginname',
+                    'icon' => $CFG->wwwroot . '/mod/quickom/pix/icon.gif',
+                    'class' => '',
+                ),
+
+                'delegate' => 'CoreCourseModuleDelegate',
+                'method' => 'mobile_course_view', // Main function in \mod_quickom\output\mobile.
+                'offlinefunctions' => array(
+                    'mobile_course_view' => array(),
+                ),
+            ),
+        ),
+        'lang' => array(
+            array('pluginname', 'quickom'),
+            array('join_meeting', 'quickom'),
+            array('unavailable', 'quickom'),
+            array('meeting_time', 'quickom'),
+            array('duration', 'quickom'),
+            array('passwordprotected', 'quickom'),
+            array('password', 'quickom'),
+            array('join_link', 'quickom'),
+            array('joinbeforehost', 'quickom'),
+            array('starthostjoins', 'quickom'),
+            array('startpartjoins', 'quickom'),
+            array('option_audio', 'quickom'),
+            array('status', 'quickom'),
+            array('recurringmeetinglong', 'quickom'),
+        ),
+    ),
 );

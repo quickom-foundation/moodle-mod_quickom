@@ -30,3 +30,6 @@ phpunit.xml
 composer.phar
 composer.lock
 /behat.yml
+
+# Language pack.
+/lang/vi

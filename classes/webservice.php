@@ -25,27 +25,26 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quickom/locallib.php');
-require_once($CFG->dirroot . '/lib/filelib.php');
+require_once $CFG->dirroot . '/mod/quickom/locallib.php';
+require_once $CFG->dirroot . '/lib/filelib.php';
 
-require_once($CFG->dirroot . '/mod/quickom/extend.php');
+require_once $CFG->dirroot . '/mod/quickom/extend.php';
 
 // Some plugins already might include this library, like mod_bigbluebuttonbn.
 // Hacky, but need to create whitelist of plugins that might have JWT library.
-// NOTE: Remove file_exists checks and the JWT library in mod when versions prior to Moodle 3.7 is no longer supported
+// NOTE: Remove file_exists checks and the JWT library in mod when versions prior to Moodle 3.7 is no longer supported.
 if (!class_exists('Firebase\JWT\JWT')) {
     if (file_exists($CFG->dirroot . '/lib/php-jwt/src/JWT.php')) {
-        require_once($CFG->dirroot . '/lib/php-jwt/src/JWT.php');
+        require_once $CFG->dirroot . '/lib/php-jwt/src/JWT.php';
     } else {
         if (file_exists($CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php')) {
-            require_once($CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php');
+            require_once $CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php';
         } else {
-            require_once($CFG->dirroot . '/mod/quickom/jwt/JWT.php');
+            require_once $CFG->dirroot . '/mod/quickom/jwt/JWT.php';
         }
     }
 }
 
-// define('QK_API_URL', 'localhost:5000/');
 define('QK_API_URL', 'quickom-prod-account.beowulfchain.com/');
 
 /**
@@ -56,8 +55,7 @@ define('QK_API_URL', 'quickom-prod-account.beowulfchain.com/');
  * @copyright  based on work by 2015 UC Regents
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class mod_quickom_webservice
-{
+class mod_quickom_webservice {
 
     /**
      * API key
@@ -93,8 +91,7 @@ class mod_quickom_webservice
      * The constructor for the webservice class.
      * @throws moodle_exception Moodle exception is thrown for missing config settings.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $config = get_config('mod_quickom');
         if (!empty($config->apikey)) {
             $this->apikey = $config->apikey;
@@ -108,7 +105,12 @@ class mod_quickom_webservice
             if (!empty($config->licensescount)) {
                 $this->numlicenses = $config->licensescount;
             } else {
-                throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_licensescount_missing', 'quickom'));
+                throw new moodle_exception(
+                    'errorwebservice',
+                    'mod_quickom',
+                    '',
+                    get_string('quickomerr_licensescount_missing', 'quickom')
+                );
             }
         }
     }
@@ -122,8 +124,7 @@ class mod_quickom_webservice
      * @return stdClass The call's result in JSON format.
      * @throws moodle_exception Moodle exception is thrown for curl errors.
      */
-    protected function _make_call($url, $data = array(), $method = 'get')
-    {
+    protected function _make_call($url, $data = array(), $method = 'get') {
         $url = QK_API_URL . $url;
         $method = strtolower($method);
         $curl = new curl();
@@ -164,8 +165,7 @@ class mod_quickom_webservice
      * @see _make_call()
      * @link https://quickom.github.io/api/#list-users
      */
-    protected function _make_paginated_call($url, $data = array(), $datatoget)
-    {
+    protected function _make_paginated_call($url, $data = array(), $datatoget) {
         $aggregatedata = array();
         $data['page_size'] = QUICKOM_MAX_RECORDS_PER_CALL;
         $reportcheck = explode('/', $url);
@@ -202,8 +202,7 @@ class mod_quickom_webservice
      * @return bool Whether the user was succesfully created.
      * @link https://quickom.github.io/api/#create-a-user
      */
-    public function autocreate_user($user)
-    {
+    public function autocreate_user($user) {
         $url = 'users';
         $data = array('action' => 'autocreate');
         $data['user_info'] = array(
@@ -211,7 +210,7 @@ class mod_quickom_webservice
             'type' => QUICKOM_USER_TYPE_PRO,
             'first_name' => $user->firstname,
             'last_name' => $user->lastname,
-            'password' => base64_encode(random_bytes(16))
+            'password' => base64_encode(random_bytes(16)),
         );
 
         try {
@@ -234,8 +233,7 @@ class mod_quickom_webservice
      * @return array An array of users.
      * @link https://quickom.github.io/api/#list-users
      */
-    public function list_users()
-    {
+    public function list_users() {
         if (empty(self::$userslist)) {
             self::$userslist = $this->_make_paginated_call('users', null, 'users');
         }
@@ -249,8 +247,7 @@ class mod_quickom_webservice
      * @see $numlicenses
      * @return bool Whether the paid user license limit has been reached.
      */
-    protected function _paid_user_limit_reached()
-    {
+    protected function _paid_user_limit_reached() {
         $userslist = $this->list_users();
         $numusers = 0;
         foreach ($userslist as $user) {
@@ -266,8 +263,7 @@ class mod_quickom_webservice
      *
      * @return string|false If user is found, returns the User ID. Otherwise, returns false.
      */
-    protected function _get_least_recently_active_paid_user_id()
-    {
+    protected function _get_least_recently_active_paid_user_id() {
         $usertimes = array();
         $userslist = $this->list_users();
         foreach ($userslist as $user) {
@@ -290,8 +286,7 @@ class mod_quickom_webservice
      * @return stdClass The call's result in JSON format.
      * @link https://quickom.github.io/api/#retrieve-a-users-settings
      */
-    public function _get_user_settings($userid)
-    {
+    public function _get_user_settings($userid) {
         $temp = TempData::get_temp_user_settings($userid);
         return $temp;
     }
@@ -303,8 +298,7 @@ class mod_quickom_webservice
      * @return stdClass|false If user is found, returns the User object. Otherwise, returns false.
      * @link https://quickom.github.io/api/#users
      */
-    public function get_user($identifier)
-    {
+    public function get_user($identifier) {
         $temp = TempData::get_temp_user();
         return $temp;
     }
@@ -320,16 +314,15 @@ class mod_quickom_webservice
      * @todo Add functionality for 'alternative_hosts' => $quickom->option_alternative_hosts in $data['settings']
      * @todo Make UCLA data fields and API data fields match?
      */
-    protected function _database_to_api($quickom)
-    {
+    protected function _database_to_api($quickom) {
         global $CFG;
 
         $data = array(
             'topic' => $quickom->name,
             'settings' => array(
                 'host_video' => (bool) ($quickom->option_host_video),
-                'audio' => $quickom->option_audio
-            )
+                'audio' => $quickom->option_audio,
+            ),
         );
         if (isset($quickom->intro)) {
             $data['agenda'] = strip_tags($quickom->intro);
@@ -370,18 +363,17 @@ class mod_quickom_webservice
      * @param stdClass $quickom The meeting to create.
      * @return stdClass The call response.
      */
-    public function create_meeting($quickom, $params = [])
-    {
+    public function create_meeting($quickom, $params = []) {
         global $USER;
         $temp = (object) TempData::get_temp_users_id_meetings($this->_database_to_api($quickom));
 
-        $qk_qr_code = Extend::create_quickom_qr_code($quickom);
-        if (!empty($qk_qr_code['url'])) {
-            $temp->start_url = $qk_qr_code['tutor_url'];
-            $temp->join_url = $qk_qr_code['student_url'];
+        $qkqrcode = Extend::create_quickom_qr_code($quickom);
+        if (!empty($qkqrcode['url'])) {
+            $temp->start_url = $qkqrcode['tutor_url'];
+            $temp->join_url = $qkqrcode['student_url'];
             $temp->creator_id = $USER->id;
-            $temp->host_key = $qk_qr_code['host_key'];
-            $temp->alias = $qk_qr_code['alias'];
+            $temp->host_key = $qkqrcode['host_key'];
+            $temp->alias = $qkqrcode['alias'];
         }
         return $temp;
     }
@@ -392,8 +384,7 @@ class mod_quickom_webservice
      * @param stdClass $quickom The meeting to update.
      * @return void
      */
-    public function update_meeting($quickom)
-    {
+    public function update_meeting($quickom) {
         $response = Extend::update_quickom_qr_code($quickom);
     }
 
@@ -404,10 +395,8 @@ class mod_quickom_webservice
      * @param bool $webinar Whether the meeting or webinar you want to delete is a webinar.
      * @return void
      */
-    public function delete_meeting($id, $webinar)
-    {
-        $url = ($webinar ? 'webinars/' : 'meetings/') . $id;
-        $this->_make_call($url, null, 'delete');
+    public function delete_meeting($quickom) {
+        $response = Extend::delete_quickom_qr_code($quickom);
     }
 
     /**
@@ -417,8 +406,7 @@ class mod_quickom_webservice
      * @param bool $webinar Whether the meeting or webinar whose information you want is a webinar.
      * @return stdClass The meeting's or webinar's information.
      */
-    public function get_meeting_webinar_info($id, $webinar)
-    {
+    public function get_meeting_webinar_info($id, $webinar) {
         $temp = TempData::get_temp_meeting_webinar_info();
         return $temp;
 
@@ -441,8 +429,7 @@ class mod_quickom_webservice
      * @return array The retrieved meetings.
      * @link https://quickom.github.io/api/#retrieve-meetings-report
      */
-    public function get_user_report($userid, $from, $to)
-    {
+    public function get_user_report($userid, $from, $to) {
         $url = 'report/users/' . $userid . '/meetings';
         $data = array('from' => $from, 'to' => $to, 'page_size' => QUICKOM_MAX_RECORDS_PER_CALL);
         return $this->_make_paginated_call($url, $data, 'meetings');
@@ -457,8 +444,7 @@ class mod_quickom_webservice
      * @link https://quickom.github.io/api/#list-webinars
      * @link https://quickom.github.io/api/#list-meetings
      */
-    public function list_meetings($userid, $webinar)
-    {
+    public function list_meetings($userid, $webinar) {
         $url = 'users/' . $userid . ($webinar ? '/webinars' : '/meetings');
         $instances = $this->_make_paginated_call($url, null, ($webinar ? 'webinars' : 'meetings'));
         return $instances;
@@ -471,8 +457,7 @@ class mod_quickom_webservice
      * @return array The attendees.
      * @link https://quickom.github.io/api/#list-a-webinars-registrants
      */
-    public function list_webinar_attendees($uuid)
-    {
+    public function list_webinar_attendees($uuid) {
         $url = 'webinars/' . $uuid . '/registrants';
         return $this->_make_paginated_call($url, null, 'registrants');
     }
@@ -484,8 +469,7 @@ class mod_quickom_webservice
      * @return stdClass A JSON object with the webinar's details.
      * @link https://quickom.github.io/api/#retrieve-a-webinar
      */
-    public function get_metrics_webinar_detail($uuid)
-    {
+    public function get_metrics_webinar_detail($uuid) {
         return $this->_make_call('webinars/' . $uuid);
     }
 
@@ -495,8 +479,7 @@ class mod_quickom_webservice
      * @param bool $webinar Whether the meeting or webinar whose information you want is a webinar.
      * @return stdClass The meeting report.
      */
-    public function get_meeting_participants($meetinguuid, $webinar)
-    {
+    public function get_meeting_participants($meetinguuid, $webinar) {
         return $this->_make_paginated_call('report/' . ($webinar ? 'webinars' : 'meetings') . '/'
             . $meetinguuid . '/participants', null, 'participants');
     }
@@ -504,10 +487,10 @@ class mod_quickom_webservice
     /**
      * Retrieves ended webinar details report.
      *
-     * @param string|int $identifier The webinar ID or webinar UUID. If given webinar ID, Quickom will take the last webinar instance.
+     * @param string|int $identifier The webinar ID or webinar UUID. 
+     * If given webinar ID, Quickom will take the last webinar instance.
      */
-    public function get_webinar_details_report($identifier)
-    {
+    public function get_webinar_details_report($identifier) {
         return $this->_make_call('report/webinars/' . $identifier);
     }
 
@@ -518,8 +501,7 @@ class mod_quickom_webservice
      * @param int $to The time to end the query at, in Unix timestamp format.
      * @return array An array of UUIDs.
      */
-    public function get_active_hosts_uuids($from, $to)
-    {
+    public function get_active_hosts_uuids($from, $to) {
         $users = $this->_make_paginated_call('report/users', array('type' => 'active', 'from' => $from, 'to' => $to), 'users');
         $uuids = array();
         foreach ($users as $user) {

@@ -32,7 +32,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->dirroot . '/mod/quickom/extend.php');
+require_once $CFG->dirroot . '/mod/quickom/extend.php';
 
 /* Moodle core API */
 
@@ -44,18 +44,17 @@ require_once($CFG->dirroot . '/mod/quickom/extend.php');
  * @param string $feature FEATURE_xx constant for requested feature
  * @return mixed true if the feature is supported, null if unknown
  */
-function quickom_supports($feature)
-{
+function quickom_supports($feature) {
     switch ($feature) {
-        case FEATURE_BACKUP_MOODLE2:
-        case FEATURE_GRADE_HAS_GRADE:
-        case FEATURE_GROUPINGS:
-        case FEATURE_GROUPMEMBERSONLY:
-        case FEATURE_MOD_INTRO:
-        case FEATURE_SHOW_DESCRIPTION:
-            return true;
-        default:
-            return null;
+    case FEATURE_BACKUP_MOODLE2:
+    case FEATURE_GRADE_HAS_GRADE:
+    case FEATURE_GROUPINGS:
+    case FEATURE_GROUPMEMBERSONLY:
+    case FEATURE_MOD_INTRO:
+    case FEATURE_SHOW_DESCRIPTION:
+        return true;
+    default:
+        return null;
     }
 }
 
@@ -69,10 +68,9 @@ function quickom_supports($feature)
  * @param mod_quickom_mod_form $mform The form instance (included because the function is used as a callback)
  * @return int The id of the newly inserted quickom record
  */
-function quickom_add_instance(stdClass $quickom, mod_quickom_mod_form $mform = null)
-{
+function quickom_add_instance(stdClass $quickom, mod_quickom_mod_form $mform = null) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
+    require_once $CFG->dirroot . '/mod/quickom/classes/webservice.php';
 
     $quickom->course = (int) $quickom->course;
 
@@ -98,19 +96,18 @@ function quickom_add_instance(stdClass $quickom, mod_quickom_mod_form $mform = n
  * @param mod_quickom_mod_form $mform The form instance (included because the function is used as a callback)
  * @return boolean Success/Failure
  */
-function quickom_update_instance(stdClass $quickom, mod_quickom_mod_form $mform = null)
-{
+function quickom_update_instance(stdClass $quickom, mod_quickom_mod_form $mform = null) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
+    require_once $CFG->dirroot . '/mod/quickom/classes/webservice.php';
 
     // The object received from mod_form.php returns instance instead of id for some reason.
     $quickom->id = $quickom->instance;
     $quickom->timemodified = time();
 
-    $quickom_record = $DB->get_record('quickom', array('id' => $quickom->instance));
-    $quickom->alias = $quickom_record->alias;
+    $quickomrecord = $DB->get_record('quickom', array('id' => $quickom->instance));
+    $quickom->alias = $quickomrecord->alias;
 
-    if (empty($quickom_record->alias)) {
+    if (empty($quickomrecord->alias)) {
         return false;
     }
     $service = new mod_quickom_webservice();
@@ -136,11 +133,10 @@ function quickom_update_instance(stdClass $quickom, mod_quickom_mod_form $mform 
  * @param stdClass $response A response from an API call like 'create meeting' or 'update meeting'
  * @return stdClass A $quickom object ready to be added to the database.
  */
-function populate_quickom_from_response(stdClass $quickom, stdClass $response)
-{
+function populate_quickom_from_response(stdClass $quickom, stdClass $response) {
     global $CFG;
     // Inlcuded for constants.
-    require_once($CFG->dirroot . '/mod/quickom/locallib.php');
+    require_once $CFG->dirroot . '/mod/quickom/locallib.php';
 
     $newquickom = clone $quickom;
 
@@ -188,23 +184,23 @@ function populate_quickom_from_response(stdClass $quickom, stdClass $response)
  * @return boolean Success/Failure
  * @throws moodle_exception if failed to delete and quickom did not issue a not found error
  */
-function quickom_delete_instance($id)
-{
+function quickom_delete_instance($id) {
+
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
+    require_once $CFG->dirroot . '/mod/quickom/classes/webservice.php';
 
     if (!$quickom = $DB->get_record('quickom', array('id' => $id))) {
         return false;
     }
 
     // Include locallib.php for constants.
-    require_once($CFG->dirroot . '/mod/quickom/locallib.php');
+    require_once $CFG->dirroot . '/mod/quickom/locallib.php';
 
     // If the meeting is missing from quickom, don't bother with the webservice.
     if ($quickom->exists_on_quickom) {
         $service = new mod_quickom_webservice();
         try {
-            $service->delete_meeting($quickom->meeting_id, $quickom->webinar);
+            $service->delete_meeting($quickom);
         } catch (moodle_exception $error) {
             if (strpos($error, 'is not found or has expired') === false) {
                 throw $error;
@@ -234,11 +230,10 @@ function quickom_delete_instance($id)
  * @param stdClass $course The course record
  * @param bool $viewfullnames Should we display full names
  * @param int $timestart Print activity since this timestamp
- * @return boolean True if anything was printed, otherwise false
+ * @return boolean true if anything was printed, otherwise false
  * @todo implement this function
  */
-function quickom_print_recent_activity($course, $viewfullnames, $timestart)
-{
+function quickom_print_recent_activity($course, $viewfullnames, $timestart) {
     return false;
 }
 
@@ -260,8 +255,7 @@ function quickom_print_recent_activity($course, $viewfullnames, $timestart)
  * @param int $groupid check for a particular group's activity only, defaults to 0 (all groups)
  * @todo implement this function
  */
-function quickom_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0)
-{
+function quickom_get_recent_mod_activity(&$activities, &$index, $timestart, $courseid, $cmid, $userid = 0, $groupid = 0) {
 }
 
 /**
@@ -274,8 +268,7 @@ function quickom_get_recent_mod_activity(&$activities, &$index, $timestart, $cou
  * @param bool $viewfullnames display users' full names
  * @todo implement this function
  */
-function quickom_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames)
-{
+function quickom_print_recent_mod_activity($activity, $courseid, $detail, $modnames, $viewfullnames) {
 }
 
 /**
@@ -287,8 +280,7 @@ function quickom_print_recent_mod_activity($activity, $courseid, $detail, $modna
  * @return array
  * @todo implement this function
  */
-function quickom_get_extra_capabilities()
-{
+function quickom_get_extra_capabilities() {
     return array();
 }
 
@@ -297,10 +289,9 @@ function quickom_get_extra_capabilities()
  *
  * @param stdClass $quickom
  */
-function quickom_calendar_item_update(stdClass $quickom)
-{
+function quickom_calendar_item_update(stdClass $quickom) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/calendar/lib.php');
+    require_once $CFG->dirroot . '/calendar/lib.php';
 
     $event = new stdClass();
     $event->name = $quickom->name;
@@ -314,7 +305,7 @@ function quickom_calendar_item_update(stdClass $quickom)
 
     $eventid = $DB->get_field('event', 'id', array(
         'modulename' => 'quickom',
-        'instance' => $quickom->id
+        'instance' => $quickom->id,
     ));
 
     // Load existing event object, or create a new one.
@@ -334,14 +325,13 @@ function quickom_calendar_item_update(stdClass $quickom)
  *
  * @param stdClass $quickom
  */
-function quickom_calendar_item_delete(stdClass $quickom)
-{
+function quickom_calendar_item_delete(stdClass $quickom) {
     global $CFG, $DB;
-    require_once($CFG->dirroot . '/calendar/lib.php');
+    require_once $CFG->dirroot . '/calendar/lib.php';
 
     $eventid = $DB->get_field('event', 'id', array(
         'modulename' => 'quickom',
-        'instance' => $quickom->id
+        'instance' => $quickom->id,
     ));
     if (!empty($eventid)) {
         calendar_event::load($eventid)->delete();
@@ -360,8 +350,7 @@ function quickom_calendar_item_delete(stdClass $quickom)
  * @param int $scaleid ID of the scale
  * @return bool true if the scale is used by the given quickom instance
  */
-function quickom_scale_used($quickomid, $scaleid)
-{
+function quickom_scale_used($quickomid, $scaleid) {
     global $DB;
 
     if ($scaleid and $DB->record_exists('quickom', array('id' => $quickomid, 'grade' => -$scaleid))) {
@@ -379,8 +368,7 @@ function quickom_scale_used($quickomid, $scaleid)
  * @param int $scaleid ID of the scale
  * @return boolean true if the scale is used by any quickom instance
  */
-function quickom_scale_used_anywhere($scaleid)
-{
+function quickom_scale_used_anywhere($scaleid) {
     global $DB;
 
     if ($scaleid and $DB->record_exists('quickom', array('grade' => -$scaleid))) {
@@ -399,10 +387,9 @@ function quickom_scale_used_anywhere($scaleid)
  * @param array $grades optional array/object of grade(s); 'reset' means reset grades in gradebook
  * @return void
  */
-function quickom_grade_item_update(stdClass $quickom, $grades = null)
-{
+function quickom_grade_item_update(stdClass $quickom, $grades = null) {
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once $CFG->libdir . '/gradelib.php';
 
     $item = array();
     $item['itemname'] = clean_param($quickom->name, PARAM_NOTAGS);
@@ -410,11 +397,11 @@ function quickom_grade_item_update(stdClass $quickom, $grades = null)
 
     if ($quickom->grade > 0) {
         $item['gradetype'] = GRADE_TYPE_VALUE;
-        $item['grademax']  = $quickom->grade;
-        $item['grademin']  = 0;
+        $item['grademax'] = $quickom->grade;
+        $item['grademin'] = 0;
     } else if ($quickom->grade < 0) {
         $item['gradetype'] = GRADE_TYPE_SCALE;
-        $item['scaleid']   = -$quickom->grade;
+        $item['scaleid'] = -$quickom->grade;
     } else {
         $item['gradetype'] = GRADE_TYPE_NONE;
     }
@@ -442,10 +429,9 @@ function quickom_grade_item_update(stdClass $quickom, $grades = null)
  * @param stdClass $quickom instance object
  * @return grade_item
  */
-function quickom_grade_item_delete($quickom)
-{
+function quickom_grade_item_delete($quickom) {
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once $CFG->libdir . '/gradelib.php';
 
     return grade_update(
         'mod/quickom',
@@ -467,10 +453,9 @@ function quickom_grade_item_delete($quickom)
  * @param stdClass $quickom instance object with extra cmidnumber and modname property
  * @param int $userid update grade of specific user only, 0 means all participants
  */
-function quickom_update_grades(stdClass $quickom, $userid = 0)
-{
+function quickom_update_grades(stdClass $quickom, $userid = 0) {
     global $CFG;
-    require_once($CFG->libdir . '/gradelib.php');
+    require_once $CFG->libdir . '/gradelib.php';
 
     // Populate array of grade objects indexed by userid.
     if ($quickom->grade == 0) {
@@ -512,8 +497,7 @@ function quickom_update_grades(stdClass $quickom, $userid = 0)
  * @return array of [(string)filearea] => (string)description
  * @todo implement this function
  */
-function quickom_get_file_areas($course, $cm, $context)
-{
+function quickom_get_file_areas($course, $cm, $context) {
     return array();
 }
 
@@ -535,8 +519,7 @@ function quickom_get_file_areas($course, $cm, $context)
  * @return file_info instance or null if not found
  * @todo implement this function
  */
-function quickom_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename)
-{
+function quickom_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
     return null;
 }
 
@@ -554,8 +537,7 @@ function quickom_get_file_info($browser, $areas, $course, $cm, $context, $filear
  * @param bool $forcedownload whether or not force download
  * @param array $options additional options affecting the file serving
  */
-function quickom_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array())
-{
+function quickom_pluginfile($course, $cm, $context, $filearea, array $args, $forcedownload, array $options = array()) {
     global $DB, $CFG;
 
     if ($context->contextlevel != CONTEXT_MODULE) {
@@ -580,8 +562,7 @@ function quickom_pluginfile($course, $cm, $context, $filearea, array $args, $for
  * @param cm_info $cm course module information
  * @todo implement this function
  */
-function quickom_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm)
-{
+function quickom_extend_navigation(navigation_node $navref, stdClass $course, stdClass $module, cm_info $cm) {
 }
 
 /**
@@ -594,8 +575,7 @@ function quickom_extend_navigation(navigation_node $navref, stdClass $course, st
  * @param navigation_node $quickomnode quickom administration node
  * @todo implement this function
  */
-function quickom_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $quickomnode = null)
-{
+function quickom_extend_settings_navigation(settings_navigation $settingsnav, navigation_node $quickomnode = null) {
 }
 
 /**
@@ -603,9 +583,8 @@ function quickom_extend_settings_navigation(settings_navigation $settingsnav, na
  *
  * @see https://docs.moodle.org/dev/Moodle_icons
  */
-function mod_quickom_get_fontawesome_icon_map()
-{
+function mod_quickom_get_fontawesome_icon_map() {
     return [
-        'mod_quickom:i/calendar' => 'fa-calendar'
+        'mod_quickom:i/calendar' => 'fa-calendar',
     ];
 }
