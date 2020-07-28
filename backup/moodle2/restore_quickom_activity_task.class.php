@@ -84,9 +84,9 @@ class restore_quickom_activity_task extends restore_activity_task {
 
     /**
      * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
+     * by the {restore_logs_processor} when restoring
      * quickom logs. It must return one array
-     * of {@link restore_log_rule} objects
+     * of {restore_log_rule} objects
      */
     static public function define_restore_log_rules() {
         $rules = array();
@@ -100,9 +100,9 @@ class restore_quickom_activity_task extends restore_activity_task {
 
     /**
      * Define the restore log rules that will be applied
-     * by the {@link restore_logs_processor} when restoring
+     * by the {restore_logs_processor} when restoring
      * course logs. It must return one array
-     * of {@link restore_log_rule} objects
+     * of {restore_log_rule} objects
      *
      * Note this rules are applied when restoring course logs
      * by the restore final task, but are defined here at

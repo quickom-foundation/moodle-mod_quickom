@@ -25,12 +25,26 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once $CFG->libdir . "/externallib.php";
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir . "/externallib.php");
 
 header('Content-Type: application/json');
 
+/**
+ * Template Data class.
+ *
+ * @package    mod_quickom
+ * @copyright  2020 Beowulf Blockchain.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class TempData {
 
+    /**
+     * Get template data of user.
+     *
+     * @return array template data
+     */
     public static function get_temp_user() {
         global $USER;
         // For get_user.
@@ -61,6 +75,12 @@ class TempData {
         ];
     }
 
+    /**
+     * Get template data of user settings.
+     *
+     * @param int $userid Id of user.
+     * @return array template data
+     */
     public static function get_temp_user_settings($userid) {
         // For _get_user_settings.
         return [
@@ -131,6 +151,11 @@ class TempData {
         ];
     }
 
+    /**
+     * Get template data of meeting webinar.
+     *
+     * @return array template data
+     */
     public static function get_temp_meeting_webinar_info() {
         // For get_meeting_webinar_info.
         return [
@@ -170,6 +195,12 @@ class TempData {
         ];
     }
 
+    /**
+     * Get template data of user id meetings.
+     *
+     * @param array $data Information of quickom classroom.
+     * @return array template data
+     */
     public static function get_temp_users_id_meetings($data) {
         return [
             "uuid" => "uKLWauBXQtiDW5QOEDojMA==",
@@ -209,8 +240,25 @@ class TempData {
     }
 }
 
+/**
+ * Extension class.
+ *
+ * @package    mod_quickom
+ * @copyright  2020 Beowulf Blockchain.
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class Extend {
 
+    /**
+     * Makes a REST call.
+     *
+     * @param string $method The HTTP method to use.
+     * @param string $url The URL to append to the API URL
+     * @param array $data The data to attach to the call.
+     * @param array $headers The data to attach to the header of the call.
+     * @return array response
+     * @throws moodle_exception Moodle exception is thrown for curl errors.
+     */
     public static function call_api($method, $url, $data, $headers = []) {
         global $CFG;
 
@@ -219,38 +267,38 @@ class Extend {
         curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . "/cacert.pem"); // For SSL certification.
 
         switch ($method) {
-        case "POST":
-            curl_setopt($curl, CURLOPT_POST, 1);
-            if ($data) {
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            }
-            break;
-        case "PUT":
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
-            if ($data) {
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            }
-            break;
-        case "DELETE":
-            curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
-            if ($data) {
-                curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-            }
-            break;
+            case "POST":
+                curl_setopt($curl, CURLOPT_POST, 1);
+                if ($data) {
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                }
+                break;
+            case "PUT":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "PUT");
+                if ($data) {
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                }
+                break;
+            case "DELETE":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+                if ($data) {
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                }
+                break;
 
-        default:
-            if ($data) {
-                $url = sprintf("%s?%s", $url, http_build_query($data));
-            }
+            default:
+                if ($data) {
+                    $url = sprintf("%s?%s", $url, http_build_query($data));
+                }
         }
 
         curl_setopt($curl, CURLOPT_URL, $url);
         if (empty($headers)) {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            curl_setopt($curl, CURLOPT_HTTPHEADER, [
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($data),
                 'Accept: application/json',
-            ));
+            ]);
         } else {
             curl_setopt($curl, CURLOPT_HTTPHEADER, array_merge(
                 [
@@ -273,6 +321,12 @@ class Extend {
         return json_decode($result, true);
     }
 
+    /**
+     * Prepare data.
+     *
+     * @param stdClass $quickom The data to attach to the call.
+     * @return array processed data.
+     */
     public static function prepare_data_to_create_update_classroom($quickom) {
         global $USER;
         $label = "";
@@ -311,6 +365,12 @@ class Extend {
         return $args;
     }
 
+    /**
+     * Create quickom classroom.
+     *
+     * @param stdClass $quickom The data to attach to the call.
+     * @return array|null responsed data.
+     */
     public static function create_quickom_qr_code($quickom) {
         $args = self::prepare_data_to_create_update_classroom($quickom);
         $config = get_config('mod_quickom');
@@ -328,6 +388,12 @@ class Extend {
         return null;
     }
 
+    /**
+     * Update quickom classroom.
+     *
+     * @param stdClass $quickom The data to attach to the call.
+     * @return array|null responsed data.
+     */
     public static function update_quickom_qr_code($quickom) {
         $args = self::prepare_data_to_create_update_classroom($quickom);
         $config = get_config('mod_quickom');
@@ -352,6 +418,12 @@ class Extend {
         return null;
     }
 
+    /**
+     * Delete quickom classroom.
+     *
+     * @param stdClass $quickom The data to attach to the call.
+     * @return array|null responsed data.
+     */
     public static function delete_quickom_qr_code($quickom) {
         $args = [
             'alias' => $quickom->alias,
@@ -377,10 +449,22 @@ class Extend {
         return null;
     }
 
+    /**
+     * Encode data.
+     *
+     * @param string $data The data will be encoded with MIME base64.
+     * @return string encoded data.
+     */
     public static function base64url_encode($data) {
         return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
     }
 
+    /**
+     * Decode data.
+     *
+     * @param string $data The data will be decoded with MIME base64.
+     * @return string decoded data.
+     */
     public static function base64url_decode($data) {
         return base64_decode(strtr($data, '-_', '+/') . str_repeat('=', 3 - (3 + strlen($data)) % 4));
     }

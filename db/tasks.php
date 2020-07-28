@@ -33,7 +33,7 @@ $tasks = array(
         'hour' => '0',
         'day' => '*',
         'month' => '*',
-        'dayofweek' => '*'
+        'dayofweek' => '*',
     ),
     array(
         'classname' => 'mod_quickom\task\get_meeting_reports',
@@ -42,7 +42,7 @@ $tasks = array(
         'hour' => '0,12',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
+        'month' => '*',
     ),
     array(
         'classname' => 'mod_quickom\task\reset_api_calls',
@@ -51,6 +51,6 @@ $tasks = array(
         'hour' => '23',
         'day' => '*',
         'dayofweek' => '*',
-        'month' => '*'
-    )
+        'month' => '*',
+    ),
 );

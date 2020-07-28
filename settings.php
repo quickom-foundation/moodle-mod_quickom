@@ -25,11 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->dirroot . '/mod/quickom/locallib.php';
+require_once($CFG->dirroot . '/mod/quickom/locallib.php');
 
 if ($ADMIN->fulltree) {
-    require_once $CFG->dirroot . '/mod/quickom/locallib.php';
-    require_once $CFG->dirroot . '/mod/quickom/classes/webservice.php';
+    require_once($CFG->dirroot . '/mod/quickom/locallib.php');
+    require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
 
     $settings = new admin_settingpage('modsettingquickom', get_string('pluginname', 'mod_quickom'));
 

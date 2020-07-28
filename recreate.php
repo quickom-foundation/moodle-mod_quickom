@@ -24,10 +24,10 @@
  */
 // Login check require_login() is called in quickom_get_instance_setup();.
 // @codingStandardsIgnoreLine
-require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
-require_once dirname(__FILE__) . '/lib.php';
-require_once dirname(__FILE__) . '/locallib.php';
-require_once dirname(__FILE__) . '/classes/webservice.php';
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once(dirname(__FILE__) . '/lib.php');
+require_once(dirname(__FILE__) . '/locallib.php');
+require_once(dirname(__FILE__) . '/classes/webservice.php');
 
 list($course, $cm, $quickom) = quickom_get_instance_setup();
 

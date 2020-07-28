@@ -27,5 +27,13 @@ namespace mod_quickom\event;
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Web service class.
+ *
+ * @package    mod_quickom
+ * @copyright  2020 Beowulf Blockchain.
+ * @copyright  based on work by 2015 UC Regents
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
 }

@@ -26,9 +26,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->dirroot . '/mod/quickom/lib.php';
-require_once $CFG->dirroot . '/mod/quickom/locallib.php';
-require_once $CFG->dirroot . '/mod/quickom/classes/webservice.php';
+require_once($CFG->dirroot . '/mod/quickom/lib.php');
+require_once($CFG->dirroot . '/mod/quickom/locallib.php');
+require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
 
 /**
  * Structure step to restore one quickom activity
@@ -44,7 +44,7 @@ class restore_quickom_activity_structure_step extends restore_activity_structure
     /**
      * Defines structure of path elements to be processed during the restore
      *
-     * @return array of {@link restore_path_element}
+     * @return array of {restore_path_element}
      */
     protected function define_structure() {
 

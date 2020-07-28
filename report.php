@@ -24,11 +24,11 @@
  */
 // Login check require_login() is called in quickom_get_instance_setup();.
 // @codingStandardsIgnoreLine
-require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
-require_once dirname(__FILE__) . '/lib.php';
-require_once dirname(__FILE__) . '/locallib.php';
-require_once dirname(__FILE__) . '/mod_form.php';
-require_once dirname(__FILE__) . '/../../lib/moodlelib.php';
+require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
+require_once(dirname(__FILE__) . '/lib.php');
+require_once(dirname(__FILE__) . '/locallib.php');
+require_once(dirname(__FILE__) . '/mod_form.php');
+require_once(dirname(__FILE__) . '/../../lib/moodlelib.php');
 
 list($course, $cm, $quickom) = quickom_get_instance_setup();
 

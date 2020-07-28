@@ -30,6 +30,14 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once("$CFG->libdir/externallib.php");
 
+/**
+ * mod_quickom_external class.
+ *
+ * @package    mod_quickom
+ * @copyright  2020 Beowulf Blockchain.
+ * @copyright  based on work by 2015 UC Regents
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class mod_quickom_external extends external_api {
 
     /**

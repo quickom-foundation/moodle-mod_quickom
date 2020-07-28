@@ -80,7 +80,7 @@ class provider implements
 
         $contextlist = new \core_privacy\local\request\contextlist();
 
-        $sql = 'SELECT c.id
+        $sql = "SELECT c.id
                   FROM {context} c
             INNER JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
             INNER JOIN {modules} m ON m.id = cm.module AND m.name = :modname
@@ -88,7 +88,7 @@ class provider implements
             INNER JOIN {quickom_meeting_details} zmd ON zmd.quickomid = z.id
              LEFT JOIN {quickom_meeting_participants} zmp ON zmp.detailsid = zmd.id
                  WHERE zmp.userid = :uclauserid
-        ';
+        ";
 
         $params = [
             'modname' => 'quickom',

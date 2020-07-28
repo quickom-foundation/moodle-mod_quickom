@@ -25,22 +25,22 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once $CFG->dirroot . '/mod/quickom/locallib.php';
-require_once $CFG->dirroot . '/lib/filelib.php';
+require_once($CFG->dirroot . '/mod/quickom/locallib.php');
+require_once($CFG->dirroot . '/lib/filelib.php');
 
-require_once $CFG->dirroot . '/mod/quickom/extend.php';
+require_once($CFG->dirroot . '/mod/quickom/extend.php');
 
 // Some plugins already might include this library, like mod_bigbluebuttonbn.
 // Hacky, but need to create whitelist of plugins that might have JWT library.
 // NOTE: Remove file_exists checks and the JWT library in mod when versions prior to Moodle 3.7 is no longer supported.
 if (!class_exists('Firebase\JWT\JWT')) {
     if (file_exists($CFG->dirroot . '/lib/php-jwt/src/JWT.php')) {
-        require_once $CFG->dirroot . '/lib/php-jwt/src/JWT.php';
+        require_once($CFG->dirroot . '/lib/php-jwt/src/JWT.php');
     } else {
         if (file_exists($CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php')) {
-            require_once $CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php';
+            require_once($CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php');
         } else {
-            require_once $CFG->dirroot . '/mod/quickom/jwt/JWT.php';
+            require_once($CFG->dirroot . '/mod/quickom/jwt/JWT.php');
         }
     }
 }
@@ -124,7 +124,7 @@ class mod_quickom_webservice {
      * @return stdClass The call's result in JSON format.
      * @throws moodle_exception Moodle exception is thrown for curl errors.
      */
-    protected function _make_call($url, $data = array(), $method = 'get') {
+    protected function _make_call($url, $data = [], $method = 'get') {
         $url = QK_API_URL . $url;
         $method = strtolower($method);
         $curl = new curl();
@@ -134,7 +134,7 @@ class mod_quickom_webservice {
             $curl->setHeader('Content-Type: application/json');
             $data = is_array($data) ? json_encode($data) : $data;
         }
-        $response = call_user_func_array(array($curl, $method), array($url, $data));
+        $response = call_user_func_array([$curl, $method], [$url, $data]);
 
         if ($curl->get_errno()) {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', $curl->error);
@@ -165,8 +165,8 @@ class mod_quickom_webservice {
      * @see _make_call()
      * @link https://quickom.github.io/api/#list-users
      */
-    protected function _make_paginated_call($url, $data = array(), $datatoget) {
-        $aggregatedata = array();
+    protected function _make_paginated_call($url, $data = [], $datatoget) {
+        $aggregatedata = [];
         $data['page_size'] = QUICKOM_MAX_RECORDS_PER_CALL;
         $reportcheck = explode('/', $url);
         $isreportcall = in_array('report', $reportcheck);
@@ -204,14 +204,14 @@ class mod_quickom_webservice {
      */
     public function autocreate_user($user) {
         $url = 'users';
-        $data = array('action' => 'autocreate');
-        $data['user_info'] = array(
+        $data = ['action' => 'autocreate'];
+        $data['user_info'] = [
             'email' => $user->email,
             'type' => QUICKOM_USER_TYPE_PRO,
             'first_name' => $user->firstname,
             'last_name' => $user->lastname,
             'password' => base64_encode(random_bytes(16)),
-        );
+        ];
 
         try {
             $this->_make_call($url, $data, 'post');
@@ -264,7 +264,7 @@ class mod_quickom_webservice {
      * @return string|false If user is found, returns the User ID. Otherwise, returns false.
      */
     protected function _get_least_recently_active_paid_user_id() {
-        $usertimes = array();
+        $usertimes = [];
         $userslist = $this->list_users();
         foreach ($userslist as $user) {
             if ($user->type != QUICKOM_USER_TYPE_BASIC && isset($user->last_login_time)) {
@@ -317,13 +317,13 @@ class mod_quickom_webservice {
     protected function _database_to_api($quickom) {
         global $CFG;
 
-        $data = array(
+        $data = [
             'topic' => $quickom->name,
-            'settings' => array(
+            'settings' => [
                 'host_video' => (bool) ($quickom->option_host_video),
                 'audio' => $quickom->option_audio,
-            ),
-        );
+            ],
+        ];
         if (isset($quickom->intro)) {
             $data['agenda'] = strip_tags($quickom->intro);
         }
@@ -361,6 +361,7 @@ class mod_quickom_webservice {
      * Take a $quickom object as returned from the Moodle form and respond with an object that can be saved to the database.
      *
      * @param stdClass $quickom The meeting to create.
+     * @param array $params more data.
      * @return stdClass The call response.
      */
     public function create_meeting($quickom, $params = []) {
@@ -389,10 +390,9 @@ class mod_quickom_webservice {
     }
 
     /**
-     * Delete a meeting or webinar on Quickom.
+     * Delete a classroom on Quickom.
      *
-     * @param int $id The meeting_id or webinar_id of the meeting or webinar to delete.
-     * @param bool $webinar Whether the meeting or webinar you want to delete is a webinar.
+     * @param stdClass $quickom The classroom to delete.
      * @return void
      */
     public function delete_meeting($quickom) {
@@ -431,7 +431,7 @@ class mod_quickom_webservice {
      */
     public function get_user_report($userid, $from, $to) {
         $url = 'report/users/' . $userid . '/meetings';
-        $data = array('from' => $from, 'to' => $to, 'page_size' => QUICKOM_MAX_RECORDS_PER_CALL);
+        $data = ['from' => $from, 'to' => $to, 'page_size' => QUICKOM_MAX_RECORDS_PER_CALL];
         return $this->_make_paginated_call($url, $data, 'meetings');
     }
 
@@ -487,7 +487,7 @@ class mod_quickom_webservice {
     /**
      * Retrieves ended webinar details report.
      *
-     * @param string|int $identifier The webinar ID or webinar UUID. 
+     * @param string|int $identifier The webinar ID or webinar UUID.
      * If given webinar ID, Quickom will take the last webinar instance.
      */
     public function get_webinar_details_report($identifier) {
@@ -502,8 +502,8 @@ class mod_quickom_webservice {
      * @return array An array of UUIDs.
      */
     public function get_active_hosts_uuids($from, $to) {
-        $users = $this->_make_paginated_call('report/users', array('type' => 'active', 'from' => $from, 'to' => $to), 'users');
-        $uuids = array();
+        $users = $this->_make_paginated_call('report/users', ['type' => 'active', 'from' => $from, 'to' => $to], 'users');
+        $uuids = [];
         foreach ($users as $user) {
             $uuids[] = $user->id;
         }
