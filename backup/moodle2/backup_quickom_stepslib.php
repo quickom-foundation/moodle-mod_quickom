@@ -52,7 +52,7 @@ class backup_quickom_activity_structure_step extends backup_activity_structure_s
             'created_at', 'host_id', 'name', 'start_time', 'timemodified',
             'recurring', 'webinar', 'duration', 'timezone', 'password', 'option_jbh',
             'option_start_type', 'option_host_video', 'option_participants_video',
-            'option_audio', 'status'));
+            'option_audio', 'status', 'creator_id', 'host_key', 'alias'));
 
         // If we had more elements, we would build the tree here.
 

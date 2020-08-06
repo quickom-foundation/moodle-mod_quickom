@@ -292,9 +292,9 @@ class Extend {
 
         curl_setopt($curl, CURLOPT_URL, $url);
         $defaultheaders = [
-                'Content-Type: application/json',
-                'Content-Length: ' . strlen($data),
-                'Accept: application/json',
+            'Content-Type: application/json',
+            'Content-Length: ' . strlen($data),
+            'Accept: application/json',
         ];
         if (empty($headers)) {
             curl_setopt($curl, CURLOPT_HTTPHEADER, $defaultheaders);
@@ -322,12 +322,17 @@ class Extend {
     public static function prepare_data_to_create_update_classroom($quickom) {
         global $USER;
         $label = "";
-        $course = get_course($quickom->course);
-        if ($course) {
-            $label = $course->fullname;
-            $sectionname = get_section_name($course, $quickom->section);
-            if ($sectionname) {
-                $label = $label . ' - ' . $sectionname;
+
+        if (!empty($quickom->course)) {
+            $course = get_course($quickom->course);
+            if ($course) {
+                $label = $course->fullname;
+                if (!empty($quickom->section)) {
+                    $sectionname = get_section_name($course, $quickom->section);
+                    if ($sectionname) {
+                        $label = $label . ' - ' . $sectionname;
+                    }
+                }
             }
         }
         if (empty($label)) {

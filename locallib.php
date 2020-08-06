@@ -148,7 +148,7 @@ function quickom_get_user_id($required = true) {
         $quickomuserid = false;
         $service = new mod_quickom_webservice();
         try {
-            $quickomuser = $service->get_user($USER->email);
+            $quickomuser = (object) $service->get_user($USER->email);
             if ($quickomuser !== false) {
                 $quickomuserid = $quickomuser->id;
             }
