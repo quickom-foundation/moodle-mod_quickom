@@ -20,6 +20,10 @@ More documentation on this plugin: https://github.com/quickom-foundation/moodle-
 
 ## Changelog
 
+v1.4
+
+- Remove local jwt, cacert.pem
+
 v1.3
 
 - Format code style PSR-1
