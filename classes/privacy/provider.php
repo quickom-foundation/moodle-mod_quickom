@@ -51,7 +51,7 @@ class provider implements
      * @param   collection $collection The collection to add metadata to.
      * @return  collection  The array of metadata
      */
-    public static function get_metadata(\core_privacy\local\metadata\collection $collection): \core_privacy\local\metadata\collection{
+    public static function get_metadata(\core_privacy\local\metadata\collection $collection): \core_privacy\local\metadata\collection {
         // Add all user data fields to the collection.
 
         $collection->add_database_table('quickom_meeting_participants', [
@@ -75,7 +75,7 @@ class provider implements
      * @param   int $userid The user to search.
      * @return  contextlist   $contextlist  The list of contexts used in this plugin.
      */
-    public static function get_contexts_for_userid(int $userid): \core_privacy\local\request\contextlist{
+    public static function get_contexts_for_userid(int $userid): \core_privacy\local\request\contextlist {
         // Query the database for context IDs give a specific user ID and return these to the user.
 
         $contextlist = new \core_privacy\local\request\contextlist();

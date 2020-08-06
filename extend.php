@@ -264,8 +264,6 @@ class Extend {
 
         $curl = curl_init();
 
-        curl_setopt($curl, CURLOPT_CAINFO, __DIR__ . "/cacert.pem"); // For SSL certification.
-
         switch ($method) {
             case "POST":
                 curl_setopt($curl, CURLOPT_POST, 1);
@@ -293,21 +291,15 @@ class Extend {
         }
 
         curl_setopt($curl, CURLOPT_URL, $url);
-        if (empty($headers)) {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, [
+        $defaultheaders = [
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($data),
                 'Accept: application/json',
-            ]);
+        ];
+        if (empty($headers)) {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, $defaultheaders);
         } else {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, array_merge(
-                [
-                    'Content-Type: application/json',
-                    'Content-Length: ' . strlen($data),
-                    'Accept: application/json',
-                ],
-                $headers
-            ));
+            curl_setopt($curl, CURLOPT_HTTPHEADER, array_merge($defaultheaders, $headers));
         }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($curl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);

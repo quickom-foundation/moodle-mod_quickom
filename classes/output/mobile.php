@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Contain mobile output class for quickom
+ *
+ * @package    mod_quickom
+ * @copyright  2020 Beowulf Blockchain.
+ * @copyright  based on work by 2018 Nick Stefanski <nmstefanski@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 namespace mod_quickom\output;
 
 defined('MOODLE_INTERNAL') || die();

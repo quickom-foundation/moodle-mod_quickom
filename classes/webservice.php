@@ -30,21 +30,6 @@ require_once($CFG->dirroot . '/lib/filelib.php');
 
 require_once($CFG->dirroot . '/mod/quickom/extend.php');
 
-// Some plugins already might include this library, like mod_bigbluebuttonbn.
-// Hacky, but need to create whitelist of plugins that might have JWT library.
-// NOTE: Remove file_exists checks and the JWT library in mod when versions prior to Moodle 3.7 is no longer supported.
-if (!class_exists('Firebase\JWT\JWT')) {
-    if (file_exists($CFG->dirroot . '/lib/php-jwt/src/JWT.php')) {
-        require_once($CFG->dirroot . '/lib/php-jwt/src/JWT.php');
-    } else {
-        if (file_exists($CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php')) {
-            require_once($CFG->dirroot . '/mod/bigbluebuttonbn/vendor/firebase/php-jwt/src/JWT.php');
-        } else {
-            require_once($CFG->dirroot . '/mod/quickom/jwt/JWT.php');
-        }
-    }
-}
-
 define('QK_API_URL', 'quickom-prod-account.beowulfchain.com/');
 
 /**
