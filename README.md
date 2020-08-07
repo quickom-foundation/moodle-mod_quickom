@@ -20,6 +20,10 @@ More documentation on this plugin: https://github.com/quickom-foundation/moodle-
 
 ## Changelog
 
+v1.5
+
+- Fixed course backup/restore issues
+
 v1.4
 
 - Remove local jwt, cacert.pem
