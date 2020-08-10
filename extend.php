@@ -437,7 +437,7 @@ class Extend {
         if (!empty($response['url'])) {
             return $response;
         }
-        if (!empty($response['error']) && $response['error'] != "404010") {
+        if (!empty($response['error']) && $response['error'] != "404010" && $response['error'] != "400002") {
             throw new moodle_exception(
                 'errorwebservice',
                 'mod_quickom',
