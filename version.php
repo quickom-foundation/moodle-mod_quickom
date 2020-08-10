@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'mod_quickom';
-$plugin->version = 2020081001;
+$plugin->version = 2020081002;
 $plugin->release = 'v1.5';
 $plugin->requires = 2017051500.00;
 $plugin->maturity = MATURITY_STABLE;

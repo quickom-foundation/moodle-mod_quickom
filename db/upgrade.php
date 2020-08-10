@@ -63,7 +63,7 @@ function xmldb_quickom_upgrade($oldversion) {
     if ($oldversion < 2015071500) {
         // Rename option_no_video_host to option_host_video; change default to 1; invert values.
         $field = new xmldb_field('option_no_video_host', XMLDB_TYPE_INTEGER, '1', null, null, null,
-                '1', 'option_start_type');
+            '1', 'option_start_type');
         // Invert option_no_video_host.
         $DB->set_field('UPDATE {quickom} SET option_no_video_host = 1 - option_no_video_host');
         $dbman->change_field_default($table, $field);
@@ -71,7 +71,7 @@ function xmldb_quickom_upgrade($oldversion) {
 
         // Rename option_no_video_participants to option_participants_video; change default to 1; invert values.
         $field = new xmldb_field('option_no_video_participants', XMLDB_TYPE_INTEGER, '1', null, null, null,
-                '1', 'option_host_video');
+            '1', 'option_host_video');
         // Invert option_no_video_participants.
         $DB->set_field('UPDATE {quickom} SET option_no_video_participants = 1 - option_no_video_participants');
         $dbman->change_field_default($table, $field);
@@ -153,7 +153,7 @@ function xmldb_quickom_upgrade($oldversion) {
         $dbman->change_field_default($table, $field);
         // Meeting is recurring if type is 3.
         $DB->set_field_select('quickom', 'type', 0, 'type <> 3');
-        $DB->set_field('quickom', 'type', 1, array('type' => 3));
+        $DB->set_field('quickom', 'type', 1, ['type' => 3]);
         $dbman->rename_field($table, $field, 'recurring');
 
         // Quickom savepoint reached.
@@ -213,10 +213,10 @@ function xmldb_quickom_upgrade($oldversion) {
         $table->add_field('quickomid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
 
         // Adding keys to table quickom_meeting_details.
-        $table->add_key('uuid_unique', XMLDB_KEY_UNIQUE, array('uuid'));
-        $table->add_key('id_primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('quickomid_foreign', XMLDB_KEY_FOREIGN, array('quickomid'), 'quickom', array('id'));
-        $table->add_key('meeting_unique', XMLDB_KEY_UNIQUE, array('meeting_id', 'uuid'));
+        $table->add_key('uuid_unique', XMLDB_KEY_UNIQUE, ['uuid']);
+        $table->add_key('id_primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('quickomid_foreign', XMLDB_KEY_FOREIGN, ['quickomid'], 'quickom', ['id']);
+        $table->add_key('meeting_unique', XMLDB_KEY_UNIQUE, ['meeting_id', 'uuid']);
 
         // Conditionally launch create table for quickom_meeting_details.
         if (!$dbman->table_exists($table)) {
@@ -240,12 +240,12 @@ function xmldb_quickom_upgrade($oldversion) {
         $table->add_field('detailsid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'name');
 
         // Adding keys to table quickom_meeting_participants.
-        $table->add_key('id_primary', XMLDB_KEY_PRIMARY, array('id'));
-        $table->add_key('user_by_meeting_key', XMLDB_KEY_UNIQUE, array('detailsid', 'quickomuserid'));
-        $table->add_key('detailsid_foreign', XMLDB_KEY_FOREIGN, array('detailsid'), 'quickom_meeting_details', array('id'));
+        $table->add_key('id_primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('user_by_meeting_key', XMLDB_KEY_UNIQUE, ['detailsid', 'quickomuserid']);
+        $table->add_key('detailsid_foreign', XMLDB_KEY_FOREIGN, ['detailsid'], 'quickom_meeting_details', ['id']);
 
         // Adding indexes to table quickom_meeting_participants.
-        $table->add_index('userid', XMLDB_INDEX_NOTUNIQUE, array('userid'));
+        $table->add_index('userid', XMLDB_INDEX_NOTUNIQUE, ['userid']);
 
         // Conditionally launch create table for quickom_meeting_participants.
         if (!$dbman->table_exists($table)) {
@@ -326,6 +326,17 @@ function xmldb_quickom_upgrade($oldversion) {
 
         // Quickom savepoint reached.
         upgrade_mod_savepoint(true, 2020070200, 'quickom');
+    }
+
+    if ($oldversion < 2020081002) {
+        // Change duration field from 6 to 12.
+        $table = new xmldb_table('quickom');
+        $field = new xmldb_field('duration');
+        $field->set_attributes(XMLDB_TYPE_INTEGER, '12', null, null, null, null);
+        $dbman->change_field_precision($table, $field);
+
+        // Quickom savepoint reached.
+        upgrade_mod_savepoint(true, 2020081002, 'quickom');
     }
 
     return true;
