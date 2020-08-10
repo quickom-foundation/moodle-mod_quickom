@@ -150,10 +150,10 @@ class mod_quickom_mod_form extends moodleform_mod {
                 $errors['start_time'] = get_string('err_start_time_past', 'quickom');
             }
 
-            // Make sure duration is positive and no more than 150 hours.
+            // Make sure duration is positive and no more than 1 year (8767 hours).
             if ($data['duration'] <= 0) {
                 $errors['duration'] = get_string('err_duration_nonpositive', 'quickom');
-            } else if ($data['duration'] > 150 * 60 * 60) {
+            } else if ($data['duration'] > 8767 * 60 * 60) {
                 $errors['duration'] = get_string('err_duration_too_long', 'quickom');
             }
         }
