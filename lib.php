@@ -301,7 +301,7 @@ function quickom_calendar_item_update(stdClass $quickom) {
     }
     $event->timestart = $quickom->start_time;
     $event->timeduration = $quickom->duration;
-    $event->visible = !$quickom->recurring;
+    $event->visible = empty($quickom->recurring) ? false : (!$quickom->recurring);
 
     $eventid = $DB->get_field('event', 'id', [
         'modulename' => 'quickom',

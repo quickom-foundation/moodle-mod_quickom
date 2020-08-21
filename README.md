@@ -20,6 +20,12 @@ More documentation on this plugin: https://github.com/quickom-foundation/moodle-
 
 ## Changelog
 
+v1.6
+
+- Change API urls
+- Change text
+- Fix some bugs
+
 v1.5
 
 - Fixed course backup/restore issues

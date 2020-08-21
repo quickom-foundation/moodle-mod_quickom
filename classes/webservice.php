@@ -30,7 +30,10 @@ require_once($CFG->dirroot . '/lib/filelib.php');
 
 require_once($CFG->dirroot . '/mod/quickom/extend.php');
 
-define('QK_API_URL', 'quickom-prod-account.beowulfchain.com/');
+define('QK_API_URL', 'conference-api-prod.quickom.com');
+define('API_CREATE_QR_CODE', QK_API_URL.'/api/account/qrcode/create');
+define('API_DELETE_QR_CODE', QK_API_URL.'/api/account/qrcode/delete');
+define('API_UPDATE_QR_CODE', QK_API_URL.'/api/account/qrcode/update');
 
 /**
  * Web service class.
@@ -110,7 +113,7 @@ class mod_quickom_webservice {
      * @throws moodle_exception Moodle exception is thrown for curl errors.
      */
     protected function _make_call($url, $data = [], $method = 'get') {
-        $url = QK_API_URL . $url;
+        $url = QK_API_URL . '/' . $url;
         $method = strtolower($method);
         $curl = new curl();
         $curl->setHeader('Authorization: ' . $this->apikey);
@@ -305,8 +308,8 @@ class mod_quickom_webservice {
         $data = [
             'topic' => $quickom->name,
             'settings' => [
-                'host_video' => (bool) ($quickom->option_host_video),
-                'audio' => $quickom->option_audio,
+                'host_video' => (bool) empty($quickom->option_host_video) ? true : $quickom->option_host_video,
+                'audio' => empty($quickom->option_audio) ? true : $quickom->option_audio,
             ],
         ];
         if (isset($quickom->intro)) {
@@ -324,12 +327,12 @@ class mod_quickom_webservice {
             $data['settings']['alternative_hosts'] = $quickom->alternative_hosts;
         }
 
-        if ($quickom->webinar) {
-            $data['type'] = $quickom->recurring ? QUICKOM_RECURRING_WEBINAR : QUICKOM_SCHEDULED_WEBINAR;
+        if (!empty($quickom->webinar)) {
+            $data['type'] = (!empty($quickom->recurring)) ? QUICKOM_RECURRING_WEBINAR : QUICKOM_SCHEDULED_WEBINAR;
         } else {
-            $data['type'] = $quickom->recurring ? QUICKOM_RECURRING_MEETING : QUICKOM_SCHEDULED_MEETING;
-            $data['settings']['join_before_host'] = (bool) ($quickom->option_jbh);
-            $data['settings']['participant_video'] = (bool) ($quickom->option_participants_video);
+            $data['type'] = (!empty($quickom->recurring)) ? QUICKOM_RECURRING_MEETING : QUICKOM_SCHEDULED_MEETING;
+            $data['settings']['join_before_host'] = (bool) empty($quickom->option_jbh) ? true : $quickom->option_jbh;
+            $data['settings']['participant_video'] = (bool) empty($quickom->option_participants_video) ? true : $quickom->option_participants_video;
         }
 
         if ($data['type'] == QUICKOM_SCHEDULED_MEETING || $data['type'] == QUICKOM_SCHEDULED_WEBINAR) {
@@ -394,15 +397,6 @@ class mod_quickom_webservice {
     public function get_meeting_webinar_info($id, $webinar) {
         $temp = TempData::get_temp_meeting_webinar_info();
         return $temp;
-
-        $url = ($webinar ? 'webinars/' : 'meetings/') . $id;
-        $response = null;
-        try {
-            $response = $this->_make_call($url);
-        } catch (moodle_exception $error) {
-            throw $error;
-        }
-        return $response;
     }
 
     /**

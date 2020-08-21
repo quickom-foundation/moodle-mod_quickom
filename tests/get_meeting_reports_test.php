@@ -83,7 +83,7 @@ class get_meeting_reports_test extends advanced_testcase {
      * Make sure that format_participant() can match Moodle users.
      */
     public function test_format_participant_matching() {
-        global $DB;return;
+        global $DB;
 
         // 1) If user does not match, verify that we are using data from Quickom.
         $participant = $this->meetingtask->format_participant($this->quickomdata,

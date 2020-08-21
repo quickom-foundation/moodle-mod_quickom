@@ -161,11 +161,13 @@ class mod_quickom_mod_form extends moodleform_mod {
         // Check if the listed alternative hosts are valid users on Quickom.
         require_once($CFG->dirroot.'/mod/quickom/classes/webservice.php');
         $service = new mod_quickom_webservice();
-        $alternativehosts = explode(',', $data['alternative_hosts']);
-        foreach ($alternativehosts as $alternativehost) {
-            if (!($service->get_user($alternativehost))) {
-                $errors['alternative_hosts'] = 'User ' . $alternativehost . ' was not found on Quickom.';
-                break;
+        if (!empty($data['alternative_hosts'])) {
+            $alternativehosts = explode(',', $data['alternative_hosts']);
+            foreach ($alternativehosts as $alternativehost) {
+                if (!($service->get_user($alternativehost))) {
+                    $errors['alternative_hosts'] = 'User ' . $alternativehost . ' was not found on Quickom.';
+                    break;
+                }
             }
         }
 

@@ -29,8 +29,6 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
 
-header('Content-Type: application/json');
-
 /**
  * Template Data class.
  *
@@ -356,7 +354,7 @@ class Extend {
             'expire_at' => $expireat,
             'passcode' => empty($quickom->password) ? "" : $quickom->password,
             'host_name' => fullname($USER),
-            'alias' => $quickom->alias,
+            'alias' => empty($quickom->alias) ? "" : $quickom->alias,
         ];
 
         return $args;
@@ -375,7 +373,7 @@ class Extend {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
         }
         $method = 'POST';
-        $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/create';
+        $url = 'https://' . API_CREATE_QR_CODE;
         $headers = ['Authorization: ' . $config->apikey];
         $data = json_encode($args);
         $response = self::call_api($method, $url, $data, $headers);
@@ -398,7 +396,7 @@ class Extend {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
         }
         $method = 'POST';
-        $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/update';
+        $url = 'https://' . API_UPDATE_QR_CODE;
         $headers = ['Authorization: ' . $config->apikey];
         $data = json_encode($args);
         $response = self::call_api($method, $url, $data, $headers);
@@ -430,7 +428,8 @@ class Extend {
             throw new moodle_exception('errorwebservice', 'mod_quickom', '', get_string('quickomerr_apikey_missing', 'quickom'));
         }
         $method = 'DELETE';
-        $url = 'https://' . QK_API_URL . 'apiv1/enterprise/qrcode/delete';
+
+        $url = 'https://' . API_DELETE_QR_CODE;
         $headers = ['Authorization: ' . $config->apikey];
         $data = json_encode($args);
         $response = self::call_api($method, $url, $data, $headers);
