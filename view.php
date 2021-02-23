@@ -27,10 +27,10 @@
  */
 // Login check require_login() is called in quickom_get_instance_setup();.
 // @codingStandardsIgnoreLine
-require_once(dirname(dirname(dirname(__FILE__))) . '/config.php');
-require_once(dirname(__FILE__) . '/lib.php');
-require_once(dirname(__FILE__) . '/locallib.php');
-require_once(dirname(__FILE__) . '/../../lib/moodlelib.php');
+require_once dirname(dirname(dirname(__FILE__))) . '/config.php';
+require_once dirname(__FILE__) . '/lib.php';
+require_once dirname(__FILE__) . '/locallib.php';
+require_once dirname(__FILE__) . '/../../lib/moodlelib.php';
 
 $config = get_config('mod_quickom');
 
@@ -39,22 +39,22 @@ list($course, $cm, $quickom) = quickom_get_instance_setup();
 $context = context_module::instance($cm->id);
 $isquickommanager = has_capability('mod/quickom:addinstance', $context);
 
-$event = \mod_quickom\event\course_module_viewed::create(array(
+$event = \mod_quickom\event\course_module_viewed::create([
     'objectid' => $PAGE->cm->instance,
     'context' => $PAGE->context,
-));
+]);
 $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $quickom);
 $event->trigger();
 
 // Print the page header.
 
-$PAGE->set_url('/mod/quickom/view.php', array('id' => $cm->id));
+$PAGE->set_url('/mod/quickom/view.php', ['id' => $cm->id]);
 $PAGE->set_title(format_string($quickom->name));
 $PAGE->set_heading(format_string($course->fullname));
 
 $quickomuserid = quickom_get_user_id(false);
-$alternativehosts = array();
+$alternativehosts = [];
 if (!is_null($quickom->alternative_hosts)) {
     $alternativehosts = explode(",", $quickom->alternative_hosts);
 }
@@ -109,57 +109,80 @@ if ($quickom->intro) {
 $table = new html_table();
 $table->attributes['class'] = 'generaltable mod_view';
 
-$table->align = array('center', 'left');
+$table->align = ['center', 'left'];
 $numcolumns = 2;
 
 list($inprogress, $available, $finished) = quickom_get_state($quickom);
 
 if ($available) {
     if ($userishost) {
-        $buttonhtml = html_writer::tag('button', $strstart, array('type' => 'submit', 'class' => 'btn btn-success'));
+        $buttonhtml = html_writer::tag('button', $strstart, ['type' => 'submit', 'class' => 'btn btn-success']);
     } else {
-        $buttonhtml = html_writer::tag('button', $strjoin, array('type' => 'submit', 'class' => 'btn btn-primary'));
+        $buttonhtml = html_writer::tag('button', $strjoin, ['type' => 'submit', 'class' => 'btn btn-primary']);
     }
-    $aurl = new moodle_url('/mod/quickom/loadmeeting.php', array('id' => $cm->id));
+    $aurl = new moodle_url('/mod/quickom/loadmeeting.php', ['id' => $cm->id]);
     $buttonhtml .= html_writer::input_hidden_params($aurl);
-    $link = html_writer::tag('form', $buttonhtml, array('action' => $aurl->out_omit_querystring(), 'target' => '_blank'));
+    $link = html_writer::tag('form', $buttonhtml, ['action' => $aurl->out_omit_querystring(), 'target' => '_blank']);
 } else {
-    $link = html_writer::tag('span', $strunavailable, array('style' => 'font-size:20px'));
+    $precheck = false;
+    if (is_siteadmin()) {
+        $precheck = true;
+    } else {
+        $roles = get_user_roles($context, $USER->id);
+        $roles_in_course = [];
+        foreach ($roles as $role) {
+            $roles_in_course[] = $role->shortname;
+        }
+        $allow_precheck = ['teacher', 'editingteacher', 'manager'];
+        $matches = array_intersect($allow_precheck, $roles_in_course);
+        if ($matches) {
+            $precheck = true;
+        }
+    }
+
+    if ($precheck) {
+        $buttonhtml = html_writer::tag('button', $strjoin, ['type' => 'submit', 'class' => 'btn btn-secondary']);
+        $aurl = new moodle_url('/mod/quickom/loadmeeting.php', ['id' => $cm->id]);
+        $buttonhtml .= html_writer::input_hidden_params($aurl);
+        $link = html_writer::tag('form', $buttonhtml, ['action' => $aurl->out_omit_querystring(), 'target' => '_blank']);
+    } else {
+        $link = html_writer::tag('span', $strunavailable, ['style' => 'font-size:20px']);
+    }
 }
 
 $title = new html_table_cell($link);
 $title->header = true;
 $title->colspan = $numcolumns;
-$table->data[] = array($title);
+$table->data[] = [$title];
 
 if ($quickom->recurring) {
     $recurringmessage = new html_table_cell(get_string('recurringmeetinglong', 'mod_quickom'));
     $recurringmessage->colspan = $numcolumns;
-    $table->data[] = array($recurringmessage);
+    $table->data[] = [$recurringmessage];
 } else {
-    $table->data[] = array($strtime, userdate($quickom->start_time));
-    $table->data[] = array($strduration, format_time($quickom->duration));
+    $table->data[] = [$strtime, userdate($quickom->start_time)];
+    $table->data[] = [$strduration, format_time($quickom->duration)];
 }
 
 if (!$quickom->webinar) {
     $haspassword = (isset($quickom->password) && $quickom->password !== '');
     $strhaspass = ($haspassword) ? $stryes : $strno;
-    $table->data[] = array($strpassprotect, $strhaspass);
+    $table->data[] = [$strpassprotect, $strhaspass];
 
     if ($userishost && $haspassword) {
-        $table->data[] = array($strpassword, $quickom->password);
+        $table->data[] = [$strpassword, $quickom->password];
     }
 }
 
 if (!$quickom->webinar) {
     $strjbh = ($quickom->option_jbh) ? $stryes : $strno;
-    $table->data[] = array($strjoinbeforehost, $strjbh);
+    $table->data[] = [$strjoinbeforehost, $strjbh];
 
     $strvideohost = ($quickom->option_host_video) ? $stryes : $strno;
-    $table->data[] = array($strstartvideohost, $strvideohost);
+    $table->data[] = [$strstartvideohost, $strvideohost];
 
     $strparticipantsvideo = ($quickom->option_participants_video) ? $stryes : $strno;
-    $table->data[] = array($strstartvideopart, $strparticipantsvideo);
+    $table->data[] = [$strstartvideopart, $strparticipantsvideo];
 }
 
 if (!$quickom->recurring) {
@@ -173,14 +196,14 @@ if (!$quickom->recurring) {
         $status = get_string('meeting_not_started', 'mod_quickom');
     }
 
-    $table->data[] = array($strstatus, $status);
+    $table->data[] = [$strstatus, $status];
 }
 
-$urlall = new moodle_url('/mod/quickom/index.php', array('id' => $course->id));
+$urlall = new moodle_url('/mod/quickom/index.php', ['id' => $course->id]);
 $linkall = html_writer::link($urlall, $strall);
 $linktoall = new html_table_cell($linkall);
 $linktoall->colspan = $numcolumns;
-$table->data[] = array($linktoall);
+$table->data[] = [$linktoall];
 
 echo html_writer::table($table);
 

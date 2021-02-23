@@ -97,7 +97,7 @@ function quickom_add_instance(stdClass $quickom, mod_quickom_mod_form $mform = n
  * @return boolean Success/Failure
  */
 function quickom_update_instance(stdClass $quickom, mod_quickom_mod_form $mform = null) {
-    global $CFG, $DB;
+    global $CFG, $DB, $USER;
     require_once($CFG->dirroot . '/mod/quickom/classes/webservice.php');
 
     // The object received from mod_form.php returns instance instead of id for some reason.
@@ -113,6 +113,7 @@ function quickom_update_instance(stdClass $quickom, mod_quickom_mod_form $mform 
     $service = new mod_quickom_webservice();
     try {
         $service->update_meeting($quickom);
+        $quickom->creator_id = $USER->id;
         $DB->update_record('quickom', $quickom);
     } catch (moodle_exception $error) {
         return false;

@@ -70,7 +70,7 @@ if ($userishost) {
         quickom_grade_item_update($quickom, $grades);
     }
 
-    $nexturl = new moodle_url($quickom->join_url, array('uname' => fullname($USER)));
+    $nexturl = new moodle_url($quickom->join_url, array('name' => fullname($USER)));
 }
 
 // Record user's clicking join.

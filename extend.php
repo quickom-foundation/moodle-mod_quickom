@@ -27,7 +27,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-require_once($CFG->libdir . "/externallib.php");
+require_once $CFG->libdir . "/externallib.php";
 
 /**
  * Template Data class.
@@ -341,17 +341,17 @@ class Extend {
 
         $starttime = $quickom->start_time * 1000; // Seconds to miliseconds.
         $endtime = $starttime + $quickom->duration * 1000;
-        $validfrom = time() * 1000;
-        $validto = $endtime + 30 * 60 * 1000; // 30 minute later.
-        $expireat = $validto + 30 * 60 * 1000; // 30 minute later.
+        // $validfrom = time() * 1000;
+        // $validto = $endtime + 30 * 60 * 1000; // 30 minute later.
+        // $expireat = $validto + 30 * 60 * 1000; // 30 minute later.
         $args = [
             "classroom" => true,
             'label' => $label,
             'start_date' => $starttime,
             'end_date' => $endtime,
-            'valid_from' => $validfrom,
-            'valid_to' => $validto,
-            'expire_at' => $expireat,
+            // 'valid_from' => $validfrom,
+            // 'valid_to' => $validto,
+            // 'expire_at' => $expireat,
             'passcode' => empty($quickom->password) ? "" : $quickom->password,
             'host_name' => fullname($USER),
             'alias' => empty($quickom->alias) ? "" : $quickom->alias,

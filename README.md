@@ -20,6 +20,18 @@ More documentation on this plugin: https://github.com/quickom-foundation/moodle-
 
 ## Changelog
 
+v1.9
+
+- Allows teachers, non-editing teachers, managers see gray button outside specified time to pre-check the link.
+
+v1.8
+
+- Who last edited live-class will be the host of it.
+
+v1.7
+
+- Enter user's fullname into the live-class at the start.
+
 v1.6
 
 - Change API urls
