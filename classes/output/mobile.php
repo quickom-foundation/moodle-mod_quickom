@@ -85,6 +85,7 @@ class mobile {
             'option_audio' => $optionaudio,
             'cmid' => $cm->id,
             'courseid' => $args->courseid,
+            'canusemoduleinfo' => $args->appversioncode >= 44000,
         );
 
         return array(

@@ -1,7 +1,13 @@
 {{=<% %>=}}
 <div>
-	<core-course-module-description description="<% quickom.intro %>" component="mod_quickom" componentId="<% cmid %>"></core-course-module-description>
-	
+	<%#canusemoduleinfo%>
+        <core-course-module-info [module]="module" description="<% quickom.intro %>" component="mod_quickom" componentId="<% cmid %>" [courseId]="courseId">
+        </core-course-module-info>
+    <%/canusemoduleinfo%>
+    <%^canusemoduleinfo%>
+		<core-course-module-description description="<% quickom.intro %>" component="mod_quickom" componentId="<% cmid %>"></core-course-module-description>
+    <%/canusemoduleinfo%>
+
 	<ion-list>
 		<%#available%>
 			<ion-item>
@@ -15,7 +21,7 @@
 				<p>{{ 'plugin.mod_quickom.unavailable' | translate }}</p>
 			</ion-item>
 		<%/available%>
-		
+
 		<%#quickom.recurring%>
 			<ion-item>
 				<p class="item-heading">{{ 'plugin.mod_quickom.recurringmeetinglong' | translate }}</p>
@@ -31,7 +37,7 @@
 				<p><% duration %></p>
 			</ion-item>
 		<%/quickom.recurring%>
-		
+
 		<%^quickom.webinar%>
 			<ion-item>
 				<p class="item-heading">{{ 'plugin.mod_quickom.passwordprotected' | translate }}</p>
@@ -39,7 +45,7 @@
 				<%^quickom.password%><p>{{ 'core.no' | translate }}</p><%/quickom.password%>
 			</ion-item>
 		<%/quickom.webinar%>
-	  
+
 		<%^quickom.webinar%>
 			<ion-item>
 				<p class="item-heading">{{ 'plugin.mod_quickom.joinbeforehost' | translate }}</p>
@@ -57,12 +63,12 @@
 				<%^quickom.option_participants_video%><p>{{ 'core.no' | translate }}</p><%/quickom.option_participants_video%>
 			</ion-item>
 		<%/quickom.webinar%>
-		
+
 		<ion-item>
 			<p class="item-heading">{{ 'plugin.mod_quickom.option_audio' | translate }}</p>
 			<p><% option_audio %></p>
 		</ion-item>
-		
+
 		<%^quickom.recurring%>
 			<ion-item>
 				<p class="item-heading">{{ 'plugin.mod_quickom.status' | translate }}</p>
